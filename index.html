@@ -1,0 +1,2290 @@
+<title>Meridian Market</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,600&family=Archivo:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#FFFFFF; --bg-alt:#F7F6F2; --bg-raise:#FFFFFF; --bg-sunk:#F1EFE8;
+  --text:#131A3E; --text-soft:#61688C; --text-mute:#8A90AC;
+  --line:#E5E1D6; --line-strong:#CFC9BA;
+  --accent:#A9761F; --accent-soft:#C79A45; --accent-ink:#1A1204;
+  --deep:#111845; --deep-2:#1B2458;
+  --on-deep:#F3F2EC; --on-deep-soft:#A9B0CC;
+  --sea:#2A6360; --ok:#2F6B4F; --warn:#95571A;
+  --shot-1:#F1ECE0; --shot-2:#E4DCCA;
+  --shadow:0 1px 2px rgba(17,24,69,.05), 0 12px 28px -22px rgba(17,24,69,.4);
+  --s--1:.8125rem; --s0:.9375rem; --s1:1.0625rem; --s2:1.3125rem;
+  --s3:1.75rem; --s4:2.25rem; --s5:3rem;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#090E28; --bg-alt:#0C1331; --bg-raise:#121A44; --bg-sunk:#070B20;
+    --text:#EDECE5; --text-soft:#A2A9C6; --text-mute:#7A82A4;
+    --line:#242D5A; --line-strong:#39437A;
+    --accent:#D9A94E; --accent-soft:#E8C684; --accent-ink:#191102;
+    --deep:#050A1E; --deep-2:#121A44;
+    --sea:#5FA6A0; --ok:#6FBF93; --warn:#D7A05A;
+    --shot-1:#1B2352; --shot-2:#141B41;
+    --shadow:0 1px 2px rgba(0,0,0,.45), 0 12px 28px -22px rgba(0,0,0,.95);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#090E28; --bg-alt:#0C1331; --bg-raise:#121A44; --bg-sunk:#070B20;
+  --text:#EDECE5; --text-soft:#A2A9C6; --text-mute:#7A82A4;
+  --line:#242D5A; --line-strong:#39437A;
+  --accent:#D9A94E; --accent-soft:#E8C684; --accent-ink:#191102;
+  --deep:#050A1E; --deep-2:#121A44;
+  --sea:#5FA6A0; --ok:#6FBF93; --warn:#D7A05A;
+  --shot-1:#1B2352; --shot-2:#141B41;
+  --shadow:0 1px 2px rgba(0,0,0,.45), 0 12px 28px -22px rgba(0,0,0,.95);
+}
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--text);
+  font-family:"Archivo","Helvetica Neue",Arial,sans-serif; font-size:var(--s0); line-height:1.55; -webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif; font-weight:700; margin:0; line-height:1.14; text-wrap:balance; letter-spacing:-.014em}
+p{margin:0}
+a{color:inherit}
+img,svg{max-width:100%}
+.wrap{width:100%; max-width:1200px; margin-inline:auto; padding-inline:20px}
+.num{font-variant-numeric:tabular-nums}
+:where(button,a,input):focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:3px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important; scroll-behavior:auto!important}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+em.ac{font-style:italic; color:var(--accent); font-weight:600}
+
+/* ---- picture tiles ---- */
+.shot{position:relative; aspect-ratio:1/1; overflow:hidden;
+  background:radial-gradient(120% 95% at 32% 16%, var(--shot-1) 0%, var(--shot-2) 74%);
+  display:grid; place-items:center}
+.shot svg{width:74%; height:74%}
+.shot.wide{aspect-ratio:16/9}
+.shot.deep{background:radial-gradient(120% 95% at 32% 16%, #1E2860 0%, #141C4A 74%)}
+.ph-note{position:absolute; left:8px; bottom:7px; font-size:.5rem; letter-spacing:.14em; text-transform:uppercase; font-weight:700; color:var(--text-mute); opacity:.65}
+.shot.deep .ph-note{color:#8B93B6}
+.sticker{position:absolute; right:10px; bottom:10px; width:62px; height:62px; border-radius:50%;
+  display:grid; place-items:center; text-align:center; font-size:.5rem; font-weight:700; line-height:1.15;
+  letter-spacing:.06em; text-transform:uppercase; padding:6px; transform:rotate(-8deg)}
+.sticker.gold{background:var(--accent); color:var(--accent-ink); box-shadow:0 0 0 3px rgba(255,255,255,.55)}
+.sticker.navy{background:var(--deep); color:#fff; box-shadow:0 0 0 3px rgba(255,255,255,.55)}
+.sticker.sea{background:var(--sea); color:#fff; box-shadow:0 0 0 3px rgba(255,255,255,.55)}
+.sticker.stone{background:#6B6F86; color:#fff; box-shadow:0 0 0 3px rgba(255,255,255,.55)}
+
+/* ---- top bars ---- */
+.util{background:var(--bg); border-bottom:1px solid var(--line); position:sticky; top:env(safe-area-inset-top,0px); z-index:60}
+.util .wrap{display:flex; align-items:center; gap:14px; padding-block:13px}
+.iconbtn{background:none; border:0; padding:6px; cursor:pointer; color:var(--text-soft); display:grid; place-items:center; border-radius:5px}
+.iconbtn:hover{color:var(--accent)}
+.iconbtn svg{width:19px; height:19px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round}
+.wordmark{font-family:"Fraunces",serif; font-weight:700; font-size:1.4rem; letter-spacing:.06em; text-transform:uppercase; color:var(--accent); text-decoration:none}
+.logo{background:var(--deep); padding:10px 18px 11px; text-decoration:none; display:inline-grid; justify-items:center; gap:4px; margin-right:auto; border-radius:2px}
+.logo .mk{font-family:"Fraunces",serif; font-weight:700; font-size:1.5rem; line-height:1; color:#fff; letter-spacing:.03em}
+.logo .tl{font-family:"Fraunces",serif; font-style:italic; font-weight:600; font-size:.6875rem; line-height:1.2; color:var(--accent-soft); background:var(--deep-2); padding:2px 8px; white-space:nowrap}
+@media (max-width:520px){ .logo{padding:8px 12px 9px} .logo .mk{font-size:1.2rem} .logo .tl{display:none} }
+.loc{display:flex; align-items:center; gap:6px; font-size:var(--s--1); color:var(--text-soft); white-space:nowrap}
+.loc svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.7}
+.cartbtn{position:relative}
+.cartbtn b{position:absolute; top:-3px; right:-4px; background:var(--accent); color:var(--accent-ink); border-radius:999px; min-width:17px; height:17px; font-size:.625rem; display:grid; place-items:center; font-weight:700}
+@media (max-width:620px){ .loc{display:none} }
+
+/* ---- mega nav ---- */
+.meganav{position:relative; background:var(--bg); border-bottom:1px solid var(--line); z-index:55}
+.navrow{display:flex; gap:0 2px; align-items:center; flex-wrap:wrap}
+.mtrigger{font:inherit; font-size:var(--s0); font-weight:600; background:none; border:0; color:var(--text);
+  padding:14px 13px; cursor:pointer; display:flex; align-items:center; gap:6px; white-space:nowrap;
+  border-bottom:2px solid transparent; text-decoration:none}
+.mtrigger{cursor:pointer}
+.mtrigger:hover{color:var(--accent)}
+.mtrigger[aria-expanded="true"]{color:var(--accent); border-bottom-color:var(--accent)}
+.chev{width:13px; height:13px; fill:none; stroke:currentColor; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; transition:transform .15s ease}
+.mtrigger[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.panel{position:absolute; left:0; right:0; top:100%; background:var(--bg-raise);
+  border-top:1px solid var(--line); border-bottom:1px solid var(--line); box-shadow:var(--shadow); z-index:70}
+.pgrid{display:grid; grid-template-columns:repeat(4,1fr); gap:4px 16px; padding-block:24px}
+.pitem{display:flex; align-items:center; gap:13px; padding:10px 12px; border-radius:6px; text-decoration:none; color:var(--text); font-size:var(--s0); line-height:1.25}
+.pitem:hover{background:var(--bg-alt); color:var(--accent)}
+.pitem svg{width:30px; height:30px; flex:0 0 auto; fill:none; stroke:var(--text-soft); stroke-width:1.3; stroke-linecap:round; stroke-linejoin:round}
+.pitem:hover svg{stroke:var(--accent)}
+@media (max-width:900px){ .pgrid{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:560px){ .mtrigger{padding:11px 9px; font-size:var(--s--1)} }
+@media (max-width:520px){ .pgrid{grid-template-columns:1fr; padding-block:14px} .panel{max-height:62vh; overflow-y:auto} }
+
+/* ---- consignment strip ---- */
+.ticker{background:var(--deep); color:var(--on-deep-soft); font-size:var(--s--1)}
+.ticker .wrap{display:flex; flex-wrap:wrap; gap:5px 22px; align-items:center; padding-block:9px}
+.ticker strong{color:var(--accent-soft); font-weight:600}
+.tickerbtn{margin-left:auto; font:inherit; font-size:var(--s--1); font-weight:600; cursor:pointer;
+  background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.22); color:var(--accent-soft);
+  border-radius:999px; padding:5px 14px; white-space:nowrap}
+.tickerbtn:hover{background:var(--accent); border-color:var(--accent); color:var(--accent-ink)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--ok);display:inline-block;margin-right:7px}
+
+/* ---- about ---- */
+.about{background:var(--bg-alt); border-block:1px solid var(--line)}
+.about .wrap{padding-block:56px; text-align:center}
+.about h2{font-size:var(--s4); margin-top:10px}
+.about .lede{max-width:64ch; margin:14px auto 0; color:var(--text-soft); font-size:var(--s1)}
+.chain{display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:7px; margin-top:28px}
+.node{font-size:.625rem; letter-spacing:.1em; text-transform:uppercase; font-weight:600; padding:7px 12px; border-radius:4px;
+  background:var(--bg-raise); color:var(--text-soft); border:1px solid var(--line)}
+.node.cut{text-decoration:line-through; opacity:.45}
+.node.end{background:var(--accent); color:var(--accent-ink); border-color:transparent}
+.arrow{color:var(--text-mute)}
+.chaincap{margin-top:16px; font-size:var(--s--1); color:var(--text-mute); max-width:60ch; margin-inline:auto}
+
+.btn{font:inherit; font-weight:600; font-size:var(--s0); border-radius:5px; padding:12px 22px; cursor:pointer; text-decoration:none; display:inline-block; border:1px solid transparent}
+.btn-gold{background:var(--accent); color:var(--accent-ink)}
+.btn-gold:hover{background:var(--accent-soft)}
+.btn-ghost{background:transparent; color:#fff; border-color:rgba(255,255,255,.3)}
+.btn-ghost:hover{border-color:var(--accent-soft); color:var(--accent-soft)}
+.btn-line{background:transparent; color:var(--text); border-color:var(--line-strong)}
+.btn-line:hover{border-color:var(--accent); color:var(--accent)}
+
+/* ---- rails ---- */
+.rail{padding-block:44px}
+.railhead{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
+.railhead .ico{width:26px; height:26px; flex:0 0 auto; color:var(--accent); fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round}
+.railhead h2{font-size:var(--s3)}
+.railhead .seeall{margin-left:auto; font-size:var(--s--1); color:var(--text-soft); text-decoration:underline; text-underline-offset:3px}
+.railhead .seeall:hover{color:var(--accent)}
+.railsub{color:var(--text-soft); margin-top:10px; max-width:70ch}
+.track{display:grid; grid-auto-flow:column; grid-auto-columns:minmax(232px,1fr); gap:18px; overflow-x:auto; padding:22px 2px 6px;
+  scroll-snap-type:x mandatory; scrollbar-width:thin}
+.track > *{scroll-snap-align:start}
+@media (max-width:640px){ .track{grid-auto-columns:minmax(200px,80%)} }
+
+.card{border:1px solid var(--line); border-radius:7px; background:var(--bg-raise); overflow:hidden; display:flex; flex-direction:column; box-shadow:var(--shadow)}
+.card .body{padding:15px; display:flex; flex-direction:column; gap:6px; flex:1}
+.card h3{font-size:var(--s1); letter-spacing:-.008em}
+.card .desc{font-size:var(--s--1); color:var(--text-soft)}
+.price{color:var(--accent); font-weight:700; font-size:var(--s2); font-family:"Fraunces",serif; white-space:nowrap}
+.price sup{font-size:.6em; top:-.5em; position:relative}
+.per{font-family:"Archivo",sans-serif; font-weight:400; font-size:var(--s--1); color:var(--text-soft)}
+.origin{display:flex; align-items:center; gap:5px; font-size:var(--s--1); color:var(--text-soft); margin-top:auto; padding-top:9px; border-top:1px dashed var(--line)}
+.origin svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.7;flex:0 0 auto}
+/* quantity stepper */
+.qtybar{padding:0 15px 15px; margin-top:auto}
+.stepper{display:flex; align-items:center; justify-content:space-between; gap:6px;
+  border:1px solid var(--line-strong); border-radius:999px; padding:5px 8px; background:var(--bg)}
+.stepbtn{width:28px; height:28px; border:0; background:transparent; color:var(--text);
+  font-size:1.15rem; line-height:1; font-weight:700; cursor:pointer; border-radius:50%; display:grid; place-items:center}
+.stepbtn:hover:not(:disabled){background:var(--bg-alt); color:var(--accent)}
+.stepbtn:disabled{opacity:.3; cursor:not-allowed}
+.qtywrap{display:flex; align-items:baseline; gap:4px; justify-content:center; flex:1}
+.qty{width:2.6em; min-width:24px; border:0; background:transparent; font:inherit; font-weight:700; font-size:var(--s0);
+  color:var(--text); text-align:right; padding:0; font-variant-numeric:tabular-nums}
+.qty:focus{outline:none}
+.qunit{font-size:.75rem; font-weight:600; color:var(--text-soft)}
+.card.added .stepper{border-color:var(--accent); background:color-mix(in srgb, var(--accent) 10%, transparent)}
+.card.added .qty,.card.added .qunit{color:var(--accent)}
+
+.pricebar{display:flex; align-items:center; gap:14px 18px; flex-wrap:wrap; justify-content:space-between;
+  padding-block:26px 2px; font-size:var(--s--1); color:var(--text-soft); border-bottom:1px solid var(--line)}
+.toggle{display:inline-flex; border:1px solid var(--line-strong); border-radius:999px; overflow:hidden; background:var(--bg-raise); margin-left:auto}
+.toggle button{font:inherit; font-size:var(--s--1); font-weight:600; border:0; background:transparent; color:var(--text-soft); padding:7px 15px; cursor:pointer}
+.toggle button[aria-pressed="true"]{background:var(--accent); color:var(--accent-ink)}
+
+/* ---- address box ---- */
+.addr{border:2px solid var(--accent); border-radius:9px; padding:34px 26px; text-align:center; background:var(--bg-raise); margin-block:26px}
+.addr h2{font-size:var(--s3)}
+.addr p{color:var(--text-soft); margin-top:9px}
+.addrform{display:flex; gap:10px; max-width:520px; margin:20px auto 0; flex-wrap:wrap}
+.addrform input{flex:1 1 220px; font:inherit; padding:12px 14px; border:1px solid var(--line-strong); border-radius:5px; background:var(--bg); color:var(--text)}
+#addrMsg{margin-top:12px; font-size:var(--s--1); color:var(--ok); font-weight:600}
+
+/* ---- how it works ---- */
+.how{background:var(--bg-alt); border-block:1px solid var(--line)}
+.how .wrap{padding-block:56px; text-align:center}
+.kicker{font-size:.6875rem; letter-spacing:.18em; text-transform:uppercase; font-weight:700; color:var(--accent)}
+.how h2{font-size:var(--s4); margin-top:10px}
+.hsteps{display:grid; grid-template-columns:1fr 1fr; gap:34px 46px; margin-top:38px; text-align:left; max-width:880px; margin-inline:auto}
+.hstep{display:flex; gap:16px; align-items:flex-start}
+.hstep .ring{flex:0 0 auto; width:54px; height:54px; border-radius:50%; border:1.5px solid var(--accent); display:grid; place-items:center; color:var(--accent)}
+.hstep .ring svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.hstep h3{font-size:var(--s1); margin-bottom:5px}
+.hstep p{font-size:var(--s--1); color:var(--text-soft)}
+@media (max-width:640px){ .hsteps{grid-template-columns:1fr; gap:26px} }
+
+/* ---- traceability ---- */
+.trace{background:var(--deep); color:var(--on-deep)}
+.trace .wrap{padding-block:58px}
+.trace h2{color:#fff; font-size:var(--s3)}
+.trace .lede{color:var(--on-deep-soft); margin-top:11px; max-width:60ch}
+.tsteps{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:30px}
+.tstep{background:var(--deep-2); border:1px solid rgba(255,255,255,.09); border-radius:7px; padding:18px}
+.tstep .k{font-size:.625rem; letter-spacing:.15em; text-transform:uppercase; color:var(--accent-soft); font-weight:700}
+.tstep h3{color:#fff; font-size:var(--s1); margin-block:8px 6px}
+.tstep p{font-size:var(--s--1); color:var(--on-deep-soft)}
+.tstep .stamp{margin-top:12px; font-size:.6875rem; letter-spacing:.05em; color:var(--on-deep-soft); border-top:1px solid rgba(255,255,255,.1); padding-top:10px}
+@media (max-width:900px){ .tsteps{grid-template-columns:1fr 1fr} }
+@media (max-width:460px){ .tsteps{grid-template-columns:1fr} }
+
+/* ---- wholesale + subscribe ---- */
+.whole{text-align:center; padding-block:60px}
+.whole h2{font-size:var(--s4); max-width:20ch; margin-inline:auto}
+.whole p{color:var(--text-soft); margin-top:12px; max-width:62ch; margin-inline:auto}
+.sub{background:var(--bg-sunk); border-block:1px solid var(--line)}
+.sub .wrap{padding-block:52px; text-align:center}
+.sub h2{font-size:var(--s4); margin-top:8px}
+.subform{display:flex; gap:10px; max-width:520px; margin:22px auto 0; flex-wrap:wrap}
+.subform input{flex:1 1 220px; font:inherit; padding:12px 14px; border:1px solid var(--line-strong); border-radius:5px; background:var(--bg); color:var(--text)}
+#subMsg{margin-top:12px; font-size:var(--s--1); color:var(--ok); font-weight:600}
+
+/* ---- footer ---- */
+footer{background:var(--bg); border-top:1px solid var(--line); padding-block:44px 28px; font-size:var(--s--1); color:var(--text-soft)}
+.fgrid{display:grid; grid-template-columns:1.5fr 1fr 1fr 1fr; gap:30px}
+.fgrid h4{font-family:"Fraunces",serif; font-size:var(--s1); color:var(--text); margin:0 0 13px; font-weight:600}
+.fgrid ul{list-style:none; margin:0; padding:0; display:grid; gap:9px}
+.fgrid a{text-decoration:none}
+.fgrid a:hover{color:var(--accent)}
+.ftag{font-family:"Fraunces",serif; font-size:var(--s2); color:var(--text-mute); line-height:1.25; margin-top:12px}
+.pays{display:flex; gap:8px; margin-top:18px; flex-wrap:wrap}
+.pay{border:1px solid var(--line-strong); border-radius:4px; padding:4px 9px; font-size:.625rem; font-weight:700; letter-spacing:.06em; color:var(--text-mute)}
+.fbot{margin-top:32px; padding-top:18px; border-top:1px solid var(--line); display:flex; flex-wrap:wrap; gap:10px; justify-content:space-between; font-size:.75rem}
+@media (max-width:760px){ .fgrid{grid-template-columns:1fr 1fr} }
+
+/* ---- order drawer ---- */
+.scrim{position:fixed; inset:0; background:rgba(10,14,40,.5); z-index:90; opacity:0; transition:opacity .2s ease}
+.scrim.on{opacity:1}
+.drawer{position:fixed; top:0; right:0; bottom:0; width:min(420px,100%); background:var(--bg); z-index:95;
+  display:flex; flex-direction:column; box-shadow:-18px 0 44px -28px rgba(0,0,0,.6);
+  transform:translateX(100%); transition:transform .24s ease}
+.drawer.on{transform:translateX(0)}
+.dhead{display:flex; align-items:flex-start; gap:12px; padding:20px 20px 16px; border-bottom:1px solid var(--line)}
+.dhead h2{font-size:var(--s2); flex:1}
+.dhead p{font-size:var(--s--1); color:var(--text-soft); margin-top:4px}
+.dclose{border:0; background:none; color:var(--text-soft); font-size:1.5rem; line-height:1; cursor:pointer; padding:2px 6px; border-radius:5px}
+.dclose:hover{background:var(--bg-alt); color:var(--text)}
+.dscroll{flex:1; min-height:0; overflow-y:auto; overscroll-behavior:contain}
+.dbody{padding:6px 20px 4px}
+.dsum{padding:14px 20px 20px; border-top:1px solid var(--line)}
+.dline{display:grid; grid-template-columns:54px 1fr auto; gap:12px; padding:16px 0; border-bottom:1px solid var(--line); align-items:start}
+.dline .shot{aspect-ratio:1/1; border-radius:5px}
+.dline .shot svg{width:80%; height:80%}
+.dname{font-weight:600; font-size:var(--s0); line-height:1.25}
+.dmeta{font-size:.75rem; color:var(--text-soft); margin-top:3px}
+.dtotal{font-weight:700; font-size:var(--s0); white-space:nowrap; font-variant-numeric:tabular-nums}
+.dctrl{display:flex; align-items:center; gap:10px; margin-top:9px}
+.dstep{display:flex; align-items:center; gap:2px; border:1px solid var(--line-strong); border-radius:999px; padding:2px 4px}
+.dstep button{width:22px; height:22px; border:0; background:none; color:var(--text); font-size:1rem; font-weight:700; cursor:pointer; border-radius:50%; line-height:1}
+.dstep button:hover{background:var(--bg-alt)}
+.dstep input{width:2.4em; border:0; background:none; font:inherit; font-weight:700; font-size:var(--s--1); text-align:center;
+  color:var(--text); font-variant-numeric:tabular-nums; padding:0}
+.dstep input:focus{outline:none}
+.dstep .u{font-size:.6875rem; color:var(--text-soft); padding-right:4px}
+.drm{border:0; background:none; color:var(--text-soft); font-size:var(--s--1); text-decoration:underline; text-underline-offset:3px; cursor:pointer; padding:0}
+.drm:hover{color:var(--warn)}
+.dempty{text-align:center; padding:54px 10px; color:var(--text-soft)}
+.dempty strong{display:block; font-family:"Fraunces",serif; font-size:var(--s2); color:var(--text); margin-bottom:8px}
+.dfoot{border-top:1px solid var(--line); padding:18px 20px calc(18px + env(safe-area-inset-bottom,0px)); background:var(--bg-alt)}
+.drow{display:flex; justify-content:space-between; gap:12px; font-size:var(--s--1); color:var(--text-soft); padding:3px 0}
+.drow.big{font-size:var(--s1); color:var(--text); font-weight:700; padding:0}
+.drow.big span:last-child{font-variant-numeric:tabular-nums}
+.dnote{font-size:.75rem; color:var(--text-mute); margin-top:10px}
+.dcta{width:100%; margin-top:12px; text-align:center}
+.acctlabel{display:block; font-size:.6875rem; letter-spacing:.12em; text-transform:uppercase; font-weight:700; color:var(--text-soft); margin-top:14px}
+.acctinput{width:100%; margin-top:6px; font:inherit; padding:10px 12px; border:1px solid var(--line-strong); border-radius:5px; background:var(--bg); color:var(--text)}
+#dMsg{margin-top:10px; font-size:var(--s--1); color:var(--ok); font-weight:600; text-align:center}
+.orderbar{position:fixed; left:0; right:0; bottom:0; z-index:80; background:var(--deep); color:#fff;
+  display:flex; align-items:center; gap:14px; justify-content:space-between; flex-wrap:wrap;
+  padding:12px 20px calc(12px + env(safe-area-inset-bottom,0px));
+  transform:translateY(130%); transition:transform .22s ease; box-shadow:0 -12px 30px -26px rgba(0,0,0,.8)}
+.orderbar.on{transform:translateY(0)}
+.orderbar .sum{font-size:var(--s--1); color:var(--on-deep-soft)}
+.orderbar .sum strong{color:#fff; font-weight:700; font-variant-numeric:tabular-nums}
+.confirm{text-align:center; padding:40px 6px}
+.confirm .tick{width:56px; height:56px; border-radius:50%; background:var(--ok); color:#fff; display:grid; place-items:center;
+  margin:0 auto 16px; font-size:1.6rem; line-height:1}
+.confirm h3{font-size:var(--s2); margin-bottom:8px}
+.confirm p{color:var(--text-soft); font-size:var(--s--1)}
+.ref{display:inline-block; margin-top:14px; font-weight:700; letter-spacing:.08em; background:var(--bg-alt);
+  border:1px solid var(--line); border-radius:5px; padding:8px 14px; font-size:var(--s--1)}
+
+
+/* ---- consignment desk ---- */
+.desk{position:fixed; inset:0; z-index:100; background:var(--bg); overflow-y:auto; display:none}
+.desk.on{display:block}
+.desk .inner{max-width:1180px; margin-inline:auto; padding:24px 20px 70px}
+.dkhead{display:flex; align-items:flex-start; gap:16px; flex-wrap:wrap; padding-bottom:18px; border-bottom:1px solid var(--line)}
+.dkhead h2{font-size:var(--s3); flex:1 1 300px}
+.dkhead p{font-size:var(--s--1); color:var(--text-soft); margin-top:6px}
+.kpis{display:grid; grid-template-columns:repeat(5,1fr); gap:14px; margin:22px 0}
+.kpi{border:1px solid var(--line); border-radius:8px; padding:15px 16px; background:var(--bg-raise)}
+.kpi .k{font-size:.625rem; letter-spacing:.14em; text-transform:uppercase; color:var(--text-soft); font-weight:700}
+.kpi .v{font-family:"Fraunces",serif; font-size:var(--s3); font-weight:700; margin-top:6px; font-variant-numeric:tabular-nums; line-height:1}
+.kpi .n{font-size:.75rem; color:var(--text-mute); margin-top:5px}
+@media (max-width:1000px){ .kpis{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:480px){ .kpis{grid-template-columns:1fr} }
+
+.panels{display:grid; grid-template-columns:1fr 340px; gap:18px; margin-bottom:22px}
+@media (max-width:900px){ .panels{grid-template-columns:1fr} }
+.pbox{border:1px solid var(--line); border-radius:8px; padding:18px; background:var(--bg-raise)}
+.pbox h3{font-size:var(--s1); margin-bottom:4px}
+.pbox .cap{font-size:.75rem; color:var(--text-soft); margin-bottom:16px}
+
+.meter{height:14px; border-radius:7px; background:var(--bg-sunk); overflow:hidden; border:1px solid var(--line)}
+.meter i{display:block; height:100%; background:var(--accent); border-radius:7px}
+.meterrow{display:flex; justify-content:space-between; font-size:var(--s--1); color:var(--text-soft); margin-top:9px}
+.meterrow strong{color:var(--text); font-variant-numeric:tabular-nums}
+
+.bars{display:grid; gap:12px}
+.bar{display:grid; grid-template-columns:96px 1fr auto; gap:10px; align-items:center; font-size:var(--s--1)}
+.bar .lab{color:var(--text-soft)}
+.bar .track{height:12px; background:var(--bg-sunk); border-radius:6px; overflow:hidden}
+.bar .fill{height:100%; background:var(--sea); border-radius:6px}
+.bar .val{font-weight:700; font-variant-numeric:tabular-nums; min-width:62px; text-align:right}
+
+.scalebar{margin-top:18px; padding:14px 16px; border:1px dashed var(--line-strong); border-radius:8px; background:var(--bg-alt)}
+.scalebar .lab{display:block; font-size:var(--s--1); font-weight:600; color:var(--text-soft)}
+.scalebar .hint{display:block; font-size:.75rem; color:var(--text-mute); margin-top:3px}
+.scalebtns{display:flex; gap:7px; flex-wrap:wrap; margin-top:11px}
+.tabs{display:flex; gap:6px; margin:6px 0 14px; flex-wrap:wrap}
+.tab{font:inherit; font-size:var(--s--1); font-weight:600; border:1px solid var(--line-strong); background:var(--bg-raise);
+  color:var(--text-soft); border-radius:999px; padding:7px 16px; cursor:pointer}
+.tab[aria-pressed="true"]{background:var(--deep); border-color:var(--deep); color:#fff}
+
+table.desk-t{border-collapse:collapse; width:100%; min-width:720px}
+table.desk-t th{background:var(--bg-sunk); font-size:.625rem; letter-spacing:.1em; text-transform:uppercase; color:var(--text-soft);
+  font-weight:700; text-align:left; padding:11px 14px; border-bottom:1px solid var(--line); white-space:nowrap}
+table.desk-t td{padding:12px 14px; border-bottom:1px solid var(--line); font-size:var(--s--1); vertical-align:middle}
+table.desk-t tr:last-child td{border-bottom:0}
+table.desk-t .r{text-align:right; font-variant-numeric:tabular-nums}
+table.desk-t .nm{font-weight:600; font-size:var(--s0)}
+table.desk-t .nm small{display:block; font-weight:400; color:var(--text-soft); margin-top:2px}
+.st{display:inline-flex; align-items:center; gap:6px; font-weight:600; white-space:nowrap}
+.st i{width:8px; height:8px; border-radius:50%; flex:0 0 auto}
+.st.good{color:var(--ok)} .st.good i{background:var(--ok)}
+.st.warn{color:var(--warn)} .st.warn i{background:var(--warn)}
+.st.hold{color:var(--text-soft)} .st.hold i{background:var(--text-mute)}
+.expander{cursor:pointer}
+.expander:hover{background:var(--bg-alt)}
+.sub-t{background:var(--bg-alt)}
+.sub-t td{font-size:.75rem; color:var(--text-soft); padding:8px 14px}
+.danger{margin-top:34px; border:1px dashed var(--warn); border-radius:8px; padding:20px; background:color-mix(in srgb, var(--warn) 6%, transparent)}
+.danger h3{font-size:var(--s1); color:var(--warn)}
+.danger p{font-size:var(--s--1); color:var(--text-soft); margin-top:7px; max-width:70ch}
+.dangeractions{display:flex; gap:10px; flex-wrap:wrap; margin-top:15px}
+.dangeractions .btn{padding:9px 16px; font-size:var(--s--1)}
+.desklink{background:none; border:0; color:inherit; font:inherit; text-decoration:underline; text-underline-offset:3px; cursor:pointer; padding:0}
+.desklink:hover{color:var(--accent)}
+
+/* ---- login modal ---- */
+.auth{position:fixed; inset:0; z-index:110; background:rgba(9,13,38,.55); display:none;
+  align-items:center; justify-content:center; padding:26px 18px; overflow-y:auto}
+.auth.on{display:flex}
+.authwrap{position:relative; width:100%; max-width:430px; margin:auto}
+.authwrap.wide{max-width:640px}
+.authx{position:absolute; top:-20px; right:-12px; width:46px; height:46px; border-radius:50%; background:#fff; border:0;
+  box-shadow:0 8px 22px -10px rgba(0,0,0,.45); font-size:1.5rem; line-height:1; cursor:pointer; color:#1b2145;
+  display:grid; place-items:center; z-index:3}
+.authx:hover{background:#f2f0ea}
+.authcard{background:var(--bg-raise); border-radius:18px; padding:34px 30px;
+  box-shadow:0 26px 64px -30px rgba(0,0,0,.65); max-height:calc(100vh - 60px); overflow-y:auto}
+.ahead{display:flex; align-items:flex-start; justify-content:space-between; gap:14px}
+.ahead h2{font-size:2rem; line-height:1}
+.ahead .sub{font-size:var(--s--1); color:var(--text-soft); margin-top:7px}
+.amark{font-family:"Fraunces",serif; font-weight:700; font-size:1.8rem; color:var(--accent); line-height:1; flex:0 0 auto}
+.field{margin-top:17px}
+.field > label{display:block; font-size:var(--s--1); font-weight:700; margin-bottom:7px}
+.field > label .req{color:var(--accent)}
+.inp{position:relative; display:flex; align-items:center}
+.inp > svg{position:absolute; left:14px; width:17px; height:17px; stroke:var(--text-mute); fill:none; stroke-width:1.7; pointer-events:none}
+.inp input,.inp select{width:100%; padding:13px 14px 13px 42px; border:1px solid var(--line-strong); border-radius:10px;
+  font:inherit; background:var(--bg); color:var(--text)}
+.inp.plain input,.inp.plain select{padding-left:14px}
+.inp input:focus,.inp select:focus{outline:2px solid var(--accent); outline-offset:1px; border-color:var(--accent)}
+.eye{position:absolute; right:10px; background:none; border:0; cursor:pointer; color:var(--text-mute); padding:6px; display:grid; place-items:center}
+.eye svg{width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.7}
+.eye:hover{color:var(--accent)}
+.flink{display:inline-block; margin-top:11px; font-size:var(--s--1); color:var(--accent); background:none; border:0;
+  text-decoration:underline; text-underline-offset:3px; cursor:pointer; padding:0; font:inherit}
+.abtn{margin-top:22px; display:inline-flex; align-items:center; gap:8px; padding:13px 26px; border-radius:10px}
+.afoot{margin-top:24px; padding-top:18px; border-top:1px solid var(--line); font-size:var(--s0); color:var(--text-soft)}
+.afoot button{background:none; border:0; color:var(--accent); font:inherit; font-weight:700;
+  text-decoration:underline; text-underline-offset:3px; cursor:pointer; padding:0}
+.apair{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+@media (max-width:520px){ .apair{grid-template-columns:1fr} .authcard{padding:28px 20px} .authx{right:-6px} }
+.autherr{margin-top:14px; font-size:var(--s--1); color:var(--warn); font-weight:600}
+.authnote{margin-top:16px; font-size:.75rem; color:var(--text-mute); line-height:1.5}
+.storelist{display:grid; gap:12px; margin-top:24px}
+.storecard{border:1px solid var(--line); border-radius:8px; padding:16px 18px; background:var(--bg-raise)}
+.storecard.on{border-color:var(--accent); background:color-mix(in srgb, var(--accent) 7%, transparent)}
+.sc-head{display:flex; justify-content:space-between; gap:12px; align-items:flex-start}
+.sc-name{font-weight:700; font-size:var(--s1)}
+.sc-now{font-size:.625rem; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); font-weight:700; margin-left:6px}
+.sc-meta{font-size:var(--s--1); color:var(--text-soft); margin-top:3px}
+.sc-actions{display:flex; gap:9px; flex-wrap:wrap; margin-top:13px}
+.sc-actions .btn{padding:8px 14px; font-size:var(--s--1)}
+.acctbtn{display:flex; align-items:center; gap:7px; border:1px solid var(--line-strong); background:var(--bg-raise);
+  color:var(--text); border-radius:999px; padding:6px 13px; font:inherit; font-size:var(--s--1); font-weight:600; cursor:pointer; white-space:nowrap}
+.acctbtn:hover{border-color:var(--accent); color:var(--accent)}
+.acctbtn .pipd{width:7px; height:7px; border-radius:50%; background:var(--ok); flex:0 0 auto}
+.acctbtn .pipd.pend{background:var(--warn)}
+@media (max-width:620px){ .acctbtn span.txt{display:none} }
+.themebtn{font:inherit; font-size:var(--s--1); border:1px solid var(--line-strong); background:var(--bg-raise); color:var(--text-soft); border-radius:999px; padding:6px 13px; cursor:pointer}
+.concept{background:var(--accent); color:var(--accent-ink); font-size:.625rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:2px 8px; border-radius:3px}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+
+<symbol id="i-fish" viewBox="0 0 100 100">
+  <path d="M12 50c10-17 27-25 42-25s26 7 32 16c-6 11-17 18-32 18S22 62 12 50z" fill="#E8896B"/>
+  <path d="M12 50c10-17 27-25 42-25 4 0 8 .5 11 1-9 9-15 22-16 38-15-2-28-9-37-14z" fill="#F0A98E"/>
+  <path d="M86 41c5-5 9-7 9-7l-2 16 2 16s-4-2-9-7z" fill="#C96A4E"/>
+  <path d="M46 26c3-8 8-12 8-12l3 12z" fill="#C96A4E"/>
+  <circle cx="26" cy="45" r="3.2" fill="#3A2318"/>
+  <path d="M38 33c4 9 5 22 3 32" stroke="#C96A4E" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+</symbol>
+<symbol id="i-oyster" viewBox="0 0 100 100">
+  <ellipse cx="50" cy="56" rx="38" ry="27" fill="#8E8C82"/>
+  <ellipse cx="50" cy="52" rx="32" ry="22" fill="#CFCABA"/>
+  <ellipse cx="50" cy="52" rx="24" ry="15" fill="#E8E2D2"/>
+  <ellipse cx="48" cy="52" rx="15" ry="9" fill="#C9C0A6"/>
+  <path d="M18 48c10-6 22-9 32-9M20 60c12 5 26 7 38 6" stroke="#7E7C72" stroke-width="1.6" fill="none" opacity=".7"/>
+  <ellipse cx="44" cy="49" rx="4" ry="2.4" fill="#F4F0E4" opacity=".85"/>
+</symbol>
+<symbol id="i-prawn" viewBox="0 0 100 100">
+  <path d="M74 22c-26 0-44 16-44 34 0 12 9 20 20 20 9 0 15-5 15-12 0-6-4-9-9-9" stroke="#E07A56" stroke-width="12" fill="none" stroke-linecap="round"/>
+  <path d="M74 22c-26 0-44 16-44 34" stroke="#F3A183" stroke-width="5" fill="none" stroke-linecap="round" opacity=".8"/>
+  <path d="M74 22l14-8M74 22l10 12" stroke="#C05F3E" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <path d="M26 76l-12 8 4-14z" fill="#C05F3E"/>
+  <circle cx="70" cy="26" r="3" fill="#3A2318"/>
+</symbol>
+<symbol id="i-abalone" viewBox="0 0 100 100">
+  <ellipse cx="50" cy="52" rx="36" ry="28" fill="#5E6B63"/>
+  <ellipse cx="50" cy="50" rx="30" ry="22" fill="#8FA095"/>
+  <ellipse cx="53" cy="49" rx="21" ry="15" fill="#B9C6B8"/>
+  <circle cx="30" cy="42" r="3" fill="#4C574F"/><circle cx="38" cy="37" r="2.6" fill="#4C574F"/>
+  <circle cx="47" cy="35" r="2.4" fill="#4C574F"/><circle cx="56" cy="36" r="2.2" fill="#4C574F"/>
+  <ellipse cx="58" cy="56" rx="10" ry="6" fill="#DCE4D8" opacity=".55"/>
+</symbol>
+<symbol id="i-striploin" viewBox="0 0 100 100">
+  <path d="M16 34h62c8 0 12 6 12 16s-4 16-12 16H16z" fill="#A6382F"/>
+  <path d="M16 34h62c8 0 12 6 12 16H16z" fill="#BC463A" opacity=".8"/>
+  <path d="M16 28h64c6 0 8 3 8 6H16z" fill="#F0E6CE"/>
+  <path d="M28 44c6-2 10 2 16 0M30 56c8-3 13 2 20-1M52 42c6-1 9 3 15 1M56 58c6-2 10 1 15-1" stroke="#E7D9BE" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+</symbol>
+<symbol id="i-ribeye" viewBox="0 0 100 100">
+  <path d="M50 18c22 0 38 14 38 32s-14 32-34 32c-22 0-40-12-40-30 0-20 14-34 36-34z" fill="#A6382F"/>
+  <path d="M60 34c14 0 22 8 22 18s-9 18-22 18-24-7-24-18 10-18 24-18z" fill="#BE4B3D"/>
+  <path d="M50 18c-10 0-18 2-24 7 8 2 12 8 10 14-2 7-10 9-16 7 2 14 18 22 34 22" fill="#8F2E27" opacity=".55"/>
+  <path d="M46 40c7-2 11 3 17 1M44 54c8-3 14 2 21-1M62 46c5-1 8 2 12 1" stroke="#E7D9BE" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+</symbol>
+<symbol id="i-lamb" viewBox="0 0 100 100">
+  <path d="M20 46h52c9 0 13 6 13 14s-4 14-13 14H20z" fill="#9E3B36"/>
+  <path d="M20 46h52c9 0 13 6 13 14H20z" fill="#B54A42" opacity=".85"/>
+  <path d="M20 40h54c5 0 7 3 7 6H20z" fill="#F0E6CE"/>
+  <g fill="#EDE4D2">
+    <rect x="28" y="14" width="7" height="28" rx="3.5"/><circle cx="31.5" cy="14" r="5.5"/>
+    <rect x="46" y="14" width="7" height="28" rx="3.5"/><circle cx="49.5" cy="14" r="5.5"/>
+    <rect x="64" y="14" width="7" height="28" rx="3.5"/><circle cx="67.5" cy="14" r="5.5"/>
+  </g>
+  <path d="M30 58c7-2 11 2 17 0M52 60c6-2 10 1 15-1" stroke="#E7D9BE" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+</symbol>
+<symbol id="i-apple" viewBox="0 0 100 100">
+  <path d="M50 26c8-6 20-4 26 4 7 9 6 26-2 38-5 8-11 12-16 12-4 0-6-2-8-2s-4 2-8 2c-5 0-11-4-16-12-8-12-9-29-2-38 6-8 18-10 26-4z" fill="#C2354A"/>
+  <path d="M50 26c-8-6-20-4-26 4-7 9-6 26 2 38 4 6 8 10 12 11-6-12-8-27-4-38 2-7 9-13 16-15z" fill="#D9556A" opacity=".75"/>
+  <path d="M50 26c0-8 2-13 2-13" stroke="#5E4227" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <path d="M53 17c7-6 16-5 16-5s-2 9-9 11c-4 1-7-2-7-6z" fill="#4C7A3E"/>
+</symbol>
+<symbol id="i-tomato" viewBox="0 0 100 100">
+  <circle cx="50" cy="56" r="30" fill="#C5372C"/>
+  <circle cx="42" cy="48" r="18" fill="#D8503F" opacity=".7"/>
+  <path d="M50 26v-8" stroke="#3E6B33" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+  <g fill="#4C7A3E">
+    <path d="M50 28c-4-8-14-10-14-10s2 10 8 12z"/><path d="M50 28c4-8 14-10 14-10s-2 10-8 12z"/>
+    <path d="M50 30c-9-3-16 2-16 2s7 6 14 3z"/><path d="M50 30c9-3 16 2 16 2s-7 6-14 3z"/>
+  </g>
+  <ellipse cx="38" cy="45" rx="7" ry="5" fill="#F2A08F" opacity=".5"/>
+</symbol>
+<symbol id="i-avocado" viewBox="0 0 100 100">
+  <path d="M50 14c14 0 26 16 26 34 0 22-12 38-26 38S24 70 24 48c0-18 12-34 26-34z" fill="#3F5D2A"/>
+  <path d="M50 22c10 0 19 12 19 26 0 17-9 30-19 30s-19-13-19-30c0-14 9-26 19-26z" fill="#BFD06A"/>
+  <ellipse cx="50" cy="54" rx="13" ry="15" fill="#8A5E2E"/>
+  <ellipse cx="46" cy="49" rx="4.5" ry="5" fill="#A5763F" opacity=".8"/>
+</symbol>
+<symbol id="i-cos" viewBox="0 0 100 100">
+  <path d="M50 16c12 0 20 12 20 30s-8 38-20 38-20-20-20-38 8-30 20-30z" fill="#5E8A3A"/>
+  <path d="M50 16c-12 0-20 12-20 30s8 38 20 38z" fill="#7FA84F"/>
+  <path d="M50 22c6 6 9 18 9 28s-3 22-9 28" stroke="#456B2A" stroke-width="2.4" fill="none"/>
+  <path d="M50 22c-6 6-9 18-9 28s3 22 9 28" stroke="#A3C471" stroke-width="2.4" fill="none"/>
+</symbol>
+<symbol id="i-herb" viewBox="0 0 100 100">
+  <path d="M50 86V40" stroke="#4B7A2E" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+  <path d="M50 46c-14-2-22-10-22-22 12-1 20 6 22 22z" fill="#6FA23F"/>
+  <path d="M50 46c14-2 22-10 22-22-12-1-20 6-22 22z" fill="#86BA52"/>
+  <path d="M50 66c-11-2-17-8-17-17 9-1 15 5 17 17z" fill="#5E8A3A"/>
+  <path d="M50 66c11-2 17-8 17-17-9-1-15 5-17 17z" fill="#7FA84F"/>
+  <path d="M38 88h24" stroke="#B8763C" stroke-width="4" stroke-linecap="round"/>
+</symbol>
+<symbol id="i-leafmix" viewBox="0 0 100 100">
+  <path d="M22 62c0-16 12-28 28-28 0 16-12 28-28 28z" fill="#6FA23F"/>
+  <path d="M78 62c0-16-12-28-28-28 0 16 12 28 28 28z" fill="#86BA52"/>
+  <path d="M50 78c-14 0-24-8-26-20 16-2 26 6 26 20z" fill="#5E8A3A"/>
+  <path d="M50 78c14 0 24-8 26-20-16-2-26 6-26 20z" fill="#A3C471"/>
+  <path d="M34 44c6 6 11 14 14 24M66 44c-6 6-11 14-14 24" stroke="#456B2A" stroke-width="2" fill="none"/>
+</symbol>
+<symbol id="i-butter" viewBox="0 0 100 100">
+  <path d="M14 44l22-14h50l-22 14z" fill="#F5DE8E"/>
+  <path d="M14 44h50v28H14z" fill="#EFD170"/>
+  <path d="M64 44l22-14v28L64 72z" fill="#DCB94F"/>
+  <path d="M26 44h14v28H26z" fill="#F7EBC2" opacity=".55"/>
+</symbol>
+<symbol id="i-honey" viewBox="0 0 100 100">
+  <path d="M34 34h32c3 0 5 2 5 5v38c0 4-3 7-7 7H36c-4 0-7-3-7-7V39c0-3 2-5 5-5z" fill="#D89A2A"/>
+  <path d="M34 34h13v50H36c-4 0-7-3-7-7V39c0-3 2-5 5-5z" fill="#E7B452" opacity=".85"/>
+  <rect x="31" y="22" width="38" height="11" rx="3" fill="#8D5E1D"/>
+  <rect x="34" y="48" width="32" height="16" rx="2" fill="#F6EEDC"/>
+  <path d="M50 52h12M40 58h20" stroke="#B98A2E" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <circle cx="43" cy="56" r="3.5" fill="#D89A2A"/>
+</symbol>
+<symbol id="i-oil" viewBox="0 0 100 100">
+  <rect x="44" y="12" width="12" height="12" rx="2" fill="#4F5A3A"/>
+  <path d="M42 24h16v10c0 4 12 10 12 20v30c0 4-3 6-7 6H37c-4 0-7-2-7-6V54c0-10 12-16 12-20z" fill="#6E7F4E"/>
+  <path d="M42 24h7v14c-5 5-12 10-12 18v30c0 3 1 4 3 4h-3c-4 0-7-2-7-6V54c0-10 12-16 12-20z" fill="#8A9C64" opacity=".8"/>
+  <rect x="32" y="58" width="36" height="20" rx="2" fill="#F1EADA"/>
+  <path d="M38 64h24M38 70h16" stroke="#6E7F4E" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+</symbol>
+<symbol id="i-chicken" viewBox="0 0 100 100">
+  <path d="M30 30c14-8 32-8 44 2 10 8 12 24 4 36-8 11-26 16-40 10-13-6-20-20-16-32 2-7 5-12 8-16z" fill="#E8C79A"/>
+  <path d="M30 30c9-5 20-7 30-5-8 8-13 20-13 33 0 10 3 18 8 24-5 0-10-1-15-4-13-6-20-20-16-32 2-7 5-12 8-16z" fill="#F2DCBB" opacity=".8"/>
+  <path d="M74 32l14-10-4 16z" fill="#D8B076"/>
+</symbol>
+<symbol id="i-crate" viewBox="0 0 100 100">
+  <rect x="10" y="34" width="80" height="46" rx="4" fill="#B08A56"/>
+  <rect x="10" y="34" width="80" height="12" rx="4" fill="#C79E64"/>
+  <path d="M18 50h64M18 62h64M18 74h64" stroke="#96733F" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <circle cx="32" cy="28" r="12" fill="#C2354A"/><circle cx="52" cy="24" r="13" fill="#4C7A3E"/><circle cx="72" cy="29" r="11" fill="#D89A2A"/>
+</symbol>
+<symbol id="i-platter" viewBox="0 0 100 100">
+  <ellipse cx="50" cy="60" rx="42" ry="22" fill="#D9D3C2"/>
+  <ellipse cx="50" cy="57" rx="36" ry="18" fill="#EFEADC"/>
+  <ellipse cx="34" cy="54" rx="12" ry="7" fill="#E8896B"/>
+  <ellipse cx="60" cy="52" rx="10" ry="6" fill="#C5372C"/>
+  <ellipse cx="48" cy="62" rx="11" ry="6" fill="#CFCABA"/>
+  <circle cx="72" cy="58" r="6" fill="#7FA84F"/><circle cx="24" cy="62" r="5" fill="#D89A2A"/>
+</symbol>
+
+<symbol id="i-crab" viewBox="0 0 100 100">
+  <ellipse cx="50" cy="54" rx="26" ry="18" fill="#C74A33"/>
+  <ellipse cx="50" cy="49" rx="20" ry="11" fill="#DC6247" opacity=".85"/>
+  <path d="M28 44L14 30M72 44l14-14M26 60L10 66M74 60l16 6M36 70l-6 14M64 70l6 14" stroke="#A93C28" stroke-width="6" stroke-linecap="round" fill="none"/>
+  <circle cx="20" cy="28" r="7" fill="#A93C28"/><circle cx="80" cy="28" r="7" fill="#A93C28"/>
+  <circle cx="42" cy="50" r="3" fill="#3A2318"/><circle cx="58" cy="50" r="3" fill="#3A2318"/>
+</symbol>
+<symbol id="i-cherry" viewBox="0 0 100 100">
+  <circle cx="36" cy="66" r="16" fill="#B3243C"/>
+  <circle cx="66" cy="70" r="13" fill="#C93552"/>
+  <circle cx="31" cy="61" r="5" fill="#D9556A" opacity=".7"/>
+  <path d="M36 50c2-18 12-26 22-30M66 57c-2-14 2-26 12-33" stroke="#4C7A3E" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M58 20c8-8 20-6 20-6s-4 10-12 11c-5 1-8-2-8-5z" fill="#4C7A3E"/>
+</symbol>
+<symbol id="i-mango" viewBox="0 0 100 100">
+  <path d="M58 20c16 0 26 14 26 30 0 20-16 34-32 34S22 70 22 52c0-18 14-32 36-32z" fill="#E0A22B"/>
+  <path d="M58 20c-14 0-24 8-30 18 8-4 20-4 28 2 8 6 10 18 6 28 10-6 16-18 16-28 0-12-8-20-20-20z" fill="#D2552F" opacity=".85"/>
+  <path d="M58 20c2-6 6-9 6-9l2 9z" fill="#4C7A3E"/>
+</symbol>
+<symbol id="i-cheese" viewBox="0 0 100 100">
+  <path d="M12 62l38-32h40v32z" fill="#E8B84B"/>
+  <path d="M12 62v14h78V62z" fill="#D2A032"/>
+  <circle cx="62" cy="52" r="5" fill="#C8952B"/><circle cx="78" cy="58" r="3.5" fill="#C8952B"/><circle cx="46" cy="55" r="3" fill="#C8952B"/>
+  <path d="M50 30v32" stroke="#D2A032" stroke-width="2" fill="none"/>
+</symbol>
+
+<symbol id="ln-fish" viewBox="0 0 24 24"><path d="M2.5 12c2.5-4.5 6.5-7 10-7 4 0 7 2.6 8.2 6.3-.8 3.9-4 7.7-8.2 7.7-3.5 0-7.5-2.5-10-7z"/><path d="M20.7 9.6L23 7.5v9l-2.3-2.1"/><circle cx="7.5" cy="10.8" r=".9"/><path d="M11 6.2c1.6 3 2 7 1.2 10.6"/></symbol>
+<symbol id="ln-fillet" viewBox="0 0 24 24"><path d="M3 16.5c2.5-5 7.5-9 14-9.5l4 2-3.5 8c-6.5 1.2-11.5.5-14.5-.5z"/><path d="M7 13.5c2.5 1 5 1.6 7.5 1.6M9.5 10c2.4 1 4.8 1.6 7 1.7"/></symbol>
+<symbol id="ln-oyster" viewBox="0 0 24 24"><ellipse cx="12" cy="13" rx="9.5" ry="6.5"/><ellipse cx="12" cy="12.6" rx="5" ry="3.2"/><path d="M3.5 10.4c3-1.6 6-2.3 8.5-2.4M3.8 16.2c3.2 1.6 6.6 2.2 9.7 2"/></symbol>
+<symbol id="ln-prawn" viewBox="0 0 24 24"><path d="M18.5 5.5c-6.5 0-11.5 4.2-11.5 9 0 3 2.2 5 5 5 2.2 0 3.8-1.2 3.8-3 0-1.6-1.2-2.6-2.6-2.6"/><path d="M18.5 5.5l3-1.8M18.5 5.5l2.2 2.8"/><path d="M6 17.5l-3.2 2.2 1-3.6"/><circle cx="17" cy="7" r=".8"/></symbol>
+<symbol id="ln-crab" viewBox="0 0 24 24"><ellipse cx="12" cy="13.5" rx="7" ry="5"/><path d="M6.5 9.5L3.5 6M17.5 9.5L20.5 6M5.5 15L2.5 17M18.5 15l3 2M8.5 18l-1 2.5M15.5 18l1 2.5"/><circle cx="9.8" cy="12.6" r=".8"/><circle cx="14.2" cy="12.6" r=".8"/></symbol>
+<symbol id="ln-shell" viewBox="0 0 24 24"><path d="M12 4.5c5.2 0 9.5 4.3 9.5 9.5h-19c0-5.2 4.3-9.5 9.5-9.5z"/><path d="M12 4.5V14M7.2 6.1L9.7 14M16.8 6.1L14.3 14"/></symbol>
+<symbol id="ln-sashimi" viewBox="0 0 24 24"><rect x="2.5" y="13" width="8" height="5.5" rx="2.7"/><rect x="13" y="13" width="8" height="5.5" rx="2.7"/><path d="M4 9.5l16-4.5M4 5.5l16 4.5"/></symbol>
+<symbol id="ln-tin" viewBox="0 0 24 24"><rect x="3.5" y="7" width="17" height="12" rx="2"/><path d="M3.5 11h17M9 7V4.5h6V7"/></symbol>
+<symbol id="ln-grid" viewBox="0 0 24 24"><circle cx="6.5" cy="6.5" r="1.3"/><circle cx="12" cy="6.5" r="1.3"/><circle cx="17.5" cy="6.5" r="1.3"/><circle cx="6.5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="17.5" cy="12" r="1.3"/><circle cx="6.5" cy="17.5" r="1.3"/><circle cx="12" cy="17.5" r="1.3"/><circle cx="17.5" cy="17.5" r="1.3"/></symbol>
+<symbol id="ln-steak" viewBox="0 0 24 24"><path d="M3.5 8.5h12.5a4.2 4.2 0 010 8.4H3.5z"/><path d="M3.5 6.3h13.8a2.2 2.2 0 012.2 2.2"/><path d="M7 11.5c2-.7 3.2.6 5 0M8 14.6c2.4-.9 4 .6 6-.3"/></symbol>
+<symbol id="ln-wagyu" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M7.5 10.2c2-1 3.2 1 5.2 0M7.5 14c3-1 5 1 8-1M13 7.8c1.8 0 2.8 1 3.8 1"/></symbol>
+<symbol id="ln-lamb" viewBox="0 0 24 24"><path d="M3.5 15h17v3.2a2 2 0 01-2 2H5.5a2 2 0 01-2-2z"/><path d="M8 15V7.2M12 15V7.2M16 15V7.2"/><circle cx="8" cy="5.4" r="1.8"/><circle cx="12" cy="5.4" r="1.8"/><circle cx="16" cy="5.4" r="1.8"/></symbol>
+<symbol id="ln-chicken" viewBox="0 0 24 24"><path d="M9.5 15.5a4.6 4.6 0 116.5-6.5c1.8 1.8 1.6 4.6-.4 6.5l-5.4 5.4"/><circle cx="7" cy="18" r="2.6"/><path d="M15.5 8.5l3-3"/></symbol>
+<symbol id="ln-knife" viewBox="0 0 24 24"><path d="M3 17.5L14.5 6c2-2 5.2-3.2 6.2-2.2s-.2 4.2-2.2 6.2L7 21.5z"/><path d="M4.5 20.5l3-3"/></symbol>
+<symbol id="ln-hook" viewBox="0 0 24 24"><path d="M12 20.5V9.5"/><path d="M12 9.5a3.6 3.6 0 113.6-3.6"/><path d="M8.5 20.5h7"/></symbol>
+<symbol id="ln-apple" viewBox="0 0 24 24"><path d="M12 8.2c1.6-1.6 4.2-1.6 5.8 0 2.1 2.1 1.6 7.4-.5 10.5-1 1.6-2.1 2.1-3.1 2.1-1 0-1.6-.5-2.2-.5s-1.2.5-2.2.5c-1 0-2.1-.5-3.1-2.1C4.6 15.6 4.1 10.3 6.2 8.2c1.6-1.6 4.2-1.6 5.8 0z"/><path d="M12 8.2V5"/><path d="M13 5c1.6-2.1 4.2-1.6 4.2-1.6s0 2.6-2.1 3.1c-1 .3-2.1-.5-2.1-1.5z"/></symbol>
+<symbol id="ln-berry" viewBox="0 0 24 24"><circle cx="8.8" cy="15.2" r="4"/><circle cx="15.2" cy="15.2" r="4"/><circle cx="12" cy="9.6" r="3.6"/><path d="M12 6V3"/></symbol>
+<symbol id="ln-leaf" viewBox="0 0 24 24"><path d="M20.5 3.5C10 3.5 4 8.8 4 16c0 2 .8 4 .8 4s1.8-7.4 8-10.4c-3.2 4-4.2 6.2-4.2 6.2s8.6 1 11.9-12.3z"/></symbol>
+<symbol id="ln-carrot" viewBox="0 0 24 24"><path d="M9 21c-3.2-3.2-5.2-8.4-5.2-8.4s5.2 2 8.4 5.2c2 2 2 4 1 5s-2.2 0-4.2-1.8z"/><path d="M13.5 11l5.5-5.5"/><path d="M16 5.5l3.5-1-1 3.5"/></symbol>
+<symbol id="ln-tomato" viewBox="0 0 24 24"><circle cx="12" cy="14" r="7"/><path d="M12 7V4.8"/><path d="M8.2 7.2c2-2.2 7.6-2.2 7.6 0M9.4 6c-1.6-1.4-4-1.2-4-1.2M14.6 6c1.6-1.4 4-1.2 4-1.2"/></symbol>
+<symbol id="ln-mushroom" viewBox="0 0 24 24"><path d="M3.5 12.2a8.5 8.5 0 0117 0z"/><path d="M9.8 12.2v5.4a2.2 2.2 0 004.4 0v-5.4"/></symbol>
+<symbol id="ln-herb" viewBox="0 0 24 24"><path d="M12 21V6.5"/><path d="M12 12.5c-4 0-6-3.2-6-3.2s3.2-2 6 1.2M12 16.5c4 0 6-3.2 6-3.2s-3.2-2-6 1.2M12 8.5c-2.6-1.8-2-4.5-2-4.5s2.6.8 3 3"/></symbol>
+<symbol id="ln-avocado" viewBox="0 0 24 24"><path d="M12 3c3.6 0 6.2 4.2 6.2 8.8S15.6 21 12 21s-6.2-4.6-6.2-9.2S8.4 3 12 3z"/><ellipse cx="12" cy="14" rx="3" ry="3.6"/></symbol>
+<symbol id="ln-jar" viewBox="0 0 24 24"><path d="M6.8 9h10.4v9.8a2.2 2.2 0 01-2.2 2.2H9a2.2 2.2 0 01-2.2-2.2z"/><path d="M8 9V5.2a1.2 1.2 0 011.2-1.2h5.6A1.2 1.2 0 0116 5.2V9"/><path d="M9.2 14h5.6"/></symbol>
+<symbol id="ln-bottle" viewBox="0 0 24 24"><path d="M10 3h4v2.8c0 2.2 3 3 3 6.2v9a2 2 0 01-2 2H9a2 2 0 01-2-2v-9c0-3.2 3-4 3-6.2z"/><path d="M7 14h10"/></symbol>
+<symbol id="ln-cheese" viewBox="0 0 24 24"><path d="M2.5 15.5l9.5-8.5h9.5v8.5z"/><path d="M2.5 15.5v3h19v-3"/><circle cx="14" cy="12.6" r="1"/><circle cx="18.2" cy="13.8" r=".8"/></symbol>
+<symbol id="ln-bag" viewBox="0 0 24 24"><path d="M6.6 8h10.8l.9 12a1.1 1.1 0 01-1.1 1.2H6.8A1.1 1.1 0 015.7 20z"/><path d="M9 8c0-3 1.4-4.5 3-4.5S15 5 15 8"/></symbol>
+<symbol id="ln-doc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v13.8a1.2 1.2 0 01-1.2 1.2H6a1.2 1.2 0 01-1.2-1.2V4.2A1.2 1.2 0 016 3z"/><path d="M14 3v4.4h4M8 13.5h8M8 17h5"/></symbol>
+<symbol id="ln-calendar" viewBox="0 0 24 24"><rect x="3.2" y="5" width="17.6" height="16" rx="2"/><path d="M3.2 10h17.6M8 3v4M16 3v4"/></symbol>
+<symbol id="ln-truck" viewBox="0 0 24 24"><path d="M2.5 16.5V8l6-3 6 3v8.5"/><path d="M14.5 11.5h4l3 3v2h-7z"/><circle cx="7" cy="18.5" r="2"/><circle cx="17.5" cy="18.5" r="2"/></symbol>
+<symbol id="ln-nodes" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.2"/><circle cx="5" cy="18.5" r="2.2"/><circle cx="19" cy="18.5" r="2.2"/><path d="M11 7.1L6 16.5M13 7.1l5 9.4M7.2 18.5h9.6"/></symbol>
+<symbol id="ln-tag" viewBox="0 0 24 24"><path d="M2.8 12.2l9.4-9.4h8v8l-9.4 9.4z"/><circle cx="16.2" cy="7.8" r="1.4"/></symbol>
+
+</defs></svg>
+
+<div class="util">
+  <div class="wrap">
+    <a class="logo" href="#top"><span class="mk">Meridian</span><span class="tl">Direct from origin to your counter</span></a>
+    <button class="iconbtn" aria-label="Search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button>
+    <span class="loc"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.3 7-11a7 7 0 10-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Singapore, 018956</span>
+    <button class="iconbtn cartbtn" id="cartBtn" aria-label="Your order"><svg viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6L5 2H2"/><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/></svg><b id="count">0</b></button>
+    <button class="acctbtn" id="acctBtn" type="button"><svg style="width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg><span class="txt" id="acctLabel">Account</span></button>
+  </div>
+</div>
+
+<nav class="meganav" id="meganav" aria-label="Categories">
+  <div class="wrap">
+    <div class="navrow">
+      <a class="mtrigger" href="#sec-seafood" data-panel="p-seafood" aria-expanded="false" aria-controls="p-seafood">Seafood <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></a>
+      <a class="mtrigger" href="#sec-meat" data-panel="p-meat" aria-expanded="false" aria-controls="p-meat">Meat <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></a>
+      <a class="mtrigger" href="#sec-produce" data-panel="p-produce" aria-expanded="false" aria-controls="p-produce">Fruit &amp; Veg <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></a>
+      <a class="mtrigger" href="#sec-grocery" data-panel="p-grocery" aria-expanded="false" aria-controls="p-grocery">Grocery <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></a>
+      <a class="mtrigger" href="#sec-seasonal" data-panel="p-seasonal" aria-expanded="false" aria-controls="p-seasonal">Seasonal <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></a>
+    </div>
+  </div>
+
+  <div class="panel" id="p-seafood" hidden><div class="wrap"><div class="pgrid">
+    <a class="pitem" href="#sec-seafood"><svg><use href="#ln-fish"/></svg>Whole Fish</a>
+    <a class="pitem" href="#sec-seafood"><svg><use href="#ln-fillet"/></svg>Fillets, Cutlets &amp; Tails</a>
+    <a class="pitem" href="#sec-seafood"><svg><use href="#ln-crab"/></svg>Crab &amp; Lobster</a>
+    <a class="pitem" href="#sec-seafood"><svg><use href="#ln-tin"/></svg>Smoked &amp; Cured</a>
+    <a class="pitem" href="#sec-seafood"><svg><use href="#ln-oyster"/></svg>Oysters</a>
+    <a class="pitem" href="#sec-seafood"><svg><use href="#ln-shell"/></svg>Mussels &amp; Shellfish</a>
+    <a class="pitem" href="#sec-seafood"><svg><use href="#ln-sashimi"/></svg>Sashimi Grade</a>
+    <a class="pitem" href="#sec-seafood"><svg><use href="#ln-oyster"/></svg>Abalone</a>
+    <a class="pitem" href="#sec-seafood"><svg><use href="#ln-prawn"/></svg>Prawns</a>
+    <a class="pitem" href="#sec-seafood"><svg><use href="#ln-bag"/></svg>Mixed Seafood Packs</a>
+    <a class="pitem" href="#trace"><svg><use href="#ln-doc"/></svg>Catch Documentation</a>
+    <a class="pitem" href="#sec-seafood"><svg><use href="#ln-grid"/></svg>All Seafood</a>
+  </div></div></div>
+
+  <div class="panel" id="p-meat" hidden><div class="wrap"><div class="pgrid">
+    <a class="pitem" href="#sec-meat"><svg><use href="#ln-steak"/></svg>Beef Primals</a>
+    <a class="pitem" href="#sec-meat"><svg><use href="#ln-wagyu"/></svg>Wagyu &amp; Marbled</a>
+    <a class="pitem" href="#sec-meat"><svg><use href="#ln-lamb"/></svg>Lamb</a>
+    <a class="pitem" href="#sec-meat"><svg><use href="#ln-chicken"/></svg>Poultry</a>
+    <a class="pitem" href="#sec-meat"><svg><use href="#ln-knife"/></svg>Portion Cuts</a>
+    <a class="pitem" href="#sec-meat"><svg><use href="#ln-hook"/></svg>Dry Aged</a>
+    <a class="pitem" href="#sec-meat"><svg><use href="#ln-tin"/></svg>Smallgoods</a>
+    <a class="pitem" href="#sec-meat"><svg><use href="#ln-bag"/></svg>Mixed Meat Packs</a>
+    <a class="pitem" href="#trace"><svg><use href="#ln-doc"/></svg>MSA Grading Sheets</a>
+    <a class="pitem" href="#sec-meat"><svg><use href="#ln-grid"/></svg>All Meat</a>
+  </div></div></div>
+
+  <div class="panel" id="p-produce" hidden><div class="wrap"><div class="pgrid">
+    <a class="pitem" href="#sec-produce"><svg><use href="#ln-apple"/></svg>Apples &amp; Pears</a>
+    <a class="pitem" href="#sec-produce"><svg><use href="#ln-berry"/></svg>Berries &amp; Stone Fruit</a>
+    <a class="pitem" href="#sec-produce"><svg><use href="#ln-leaf"/></svg>Leaf &amp; Salad</a>
+    <a class="pitem" href="#sec-produce"><svg><use href="#ln-tomato"/></svg>Tomatoes</a>
+    <a class="pitem" href="#sec-produce"><svg><use href="#ln-avocado"/></svg>Avocado</a>
+    <a class="pitem" href="#sec-produce"><svg><use href="#ln-carrot"/></svg>Roots &amp; Alliums</a>
+    <a class="pitem" href="#sec-produce"><svg><use href="#ln-mushroom"/></svg>Mushrooms</a>
+    <a class="pitem" href="#sec-produce"><svg><use href="#ln-herb"/></svg>Herbs</a>
+    <a class="pitem" href="#sec-produce"><svg><use href="#ln-bag"/></svg>Market Garden Crates</a>
+    <a class="pitem" href="#sec-produce"><svg><use href="#ln-grid"/></svg>All Produce</a>
+  </div></div></div>
+
+  <div class="panel" id="p-grocery" hidden><div class="wrap"><div class="pgrid">
+    <a class="pitem" href="#sec-grocery"><svg><use href="#ln-jar"/></svg>Butter &amp; Dairy</a>
+    <a class="pitem" href="#sec-grocery"><svg><use href="#ln-cheese"/></svg>Cheese</a>
+    <a class="pitem" href="#sec-grocery"><svg><use href="#ln-bottle"/></svg>Oils &amp; Vinegar</a>
+    <a class="pitem" href="#sec-grocery"><svg><use href="#ln-jar"/></svg>Honey &amp; Preserves</a>
+    <a class="pitem" href="#sec-grocery"><svg><use href="#ln-bag"/></svg>Pantry Staples</a>
+    <a class="pitem" href="#sec-grocery"><svg><use href="#ln-bottle"/></svg>Sauces &amp; Condiments</a>
+    <a class="pitem" href="#sec-grocery"><svg><use href="#ln-tin"/></svg>Specialty Tinned</a>
+    <a class="pitem" href="#sec-grocery"><svg><use href="#ln-tin"/></svg>Charcuterie &amp; Terrines</a>
+    <a class="pitem" href="#sec-grocery"><svg><use href="#ln-bag"/></svg>Crackers &amp; Biscuits</a>
+    <a class="pitem" href="#sec-grocery"><svg><use href="#ln-jar"/></svg>Salt, Pepper &amp; Spice</a>
+    <a class="pitem" href="#sec-grocery"><svg><use href="#ln-bag"/></svg>Chocolate</a>
+    <a class="pitem" href="#sec-grocery"><svg><use href="#ln-grid"/></svg>All Grocery</a>
+  </div></div></div>
+
+  <div class="panel" id="p-seasonal" hidden><div class="wrap"><div class="pgrid">
+    <a class="pitem" href="#sec-seasonal"><svg><use href="#ln-leaf"/></svg>In Season Now</a>
+    <a class="pitem" href="#sec-meat"><svg><use href="#ln-lamb"/></svg>New Season Lamb</a>
+    <a class="pitem" href="#sec-produce"><svg><use href="#ln-herb"/></svg>Asparagus &amp; Broad Beans</a>
+    <a class="pitem" href="#sec-grocery"><svg><use href="#ln-bottle"/></svg>New Season Olive Oil</a>
+    <a class="pitem" href="#sec-seafood"><svg><use href="#ln-crab"/></svg>Spanner Crab</a>
+    <a class="pitem" href="#sec-seafood"><svg><use href="#ln-shell"/></svg>Scallop Season</a>
+    <a class="pitem" href="#sec-produce"><svg><use href="#ln-berry"/></svg>Cherry Programme</a>
+    <a class="pitem" href="#sec-produce"><svg><use href="#ln-apple"/></svg>Mango Window</a>
+    <a class="pitem" href="#sec-produce"><svg><use href="#ln-mushroom"/></svg>Truffle Watch</a>
+    <a class="pitem" href="#how"><svg><use href="#ln-calendar"/></svg>Seasonal Calendar</a>
+    <a class="pitem" href="#sec-seasonal"><svg><use href="#ln-truck"/></svg>Opening Next Consignment</a>
+    <a class="pitem" href="#sec-seasonal"><svg><use href="#ln-grid"/></svg>All Seasonal Lines</a>
+  </div></div></div>
+</nav>
+
+<div class="ticker">
+  <div class="wrap">
+    <span><span class="dot"></span><strong>Consignment AU-14</strong> closes Thursday 16:00 SGT</span>
+    <span>Lands Singapore Monday 06:00, cleared by 11:00</span>
+    <span>Origins live: Australia, New Zealand</span>
+    <button class="tickerbtn" id="openDeskTop" type="button">Consignment desk &rarr;</button>
+  </div>
+</div>
+
+<main id="top">
+
+<div class="wrap">
+  <div class="pricebar">
+    <span>All prices are landed Singapore, duty and freight included. Showing rates for</span>
+    <div class="toggle" role="group" aria-label="Pricing channel">
+      <button id="chTrade" aria-pressed="true">Trade &middot; HORECA &amp; retail</button>
+      <button id="chHome" aria-pressed="false">Consumer</button>
+    </div>
+  </div>
+</div>
+
+<section class="wrap rail" id="sec-seafood">
+  <div class="railhead">
+    <svg class="ico"><use href="#ln-fish"/></svg>
+    <h2>Fresh <em class="ac">Seafood</em></h2>
+    <a class="seeall" href="#sec-seafood">See all</a>
+  </div>
+  <p class="railsub">Landed at origin and packed the same day, then one flight to Changi. Nothing sits in a local cold room on the way to you.</p>
+  <div class="track" id="track-seafood"></div>
+</section>
+
+<section class="wrap rail" id="sec-meat">
+  <div class="railhead">
+    <svg class="ico"><use href="#ln-steak"/></svg>
+    <h2>Premium <em class="ac">Meat</em></h2>
+    <a class="seeall" href="#sec-meat">See all</a>
+  </div>
+  <p class="railsub">MSA graded at the works and cut to your spec before it leaves Australia, so nothing is broken down twice.</p>
+  <div class="track" id="track-meat"></div>
+</section>
+
+<section class="wrap rail" id="sec-produce">
+  <div class="railhead">
+    <svg class="ico"><use href="#ln-leaf"/></svg>
+    <h2>Fruit &amp; <em class="ac">Vegetables</em></h2>
+    <a class="seeall" href="#sec-produce">See all</a>
+  </div>
+  <p class="railsub">Picked against the consignment rather than a warehouse forecast, so what ships is what was ordered that week.</p>
+  <div class="track" id="track-produce"></div>
+</section>
+
+<section class="wrap rail" id="sec-grocery">
+  <div class="railhead">
+    <svg class="ico"><use href="#ln-jar"/></svg>
+    <h2>Pantry &amp; <em class="ac">Grocery</em></h2>
+    <a class="seeall" href="#sec-grocery">See all</a>
+  </div>
+  <p class="railsub">Rides the same freight as the fresh lines, so the ambient leg costs you nothing extra.</p>
+  <div class="track" id="track-grocery"></div>
+</section>
+
+<section class="wrap rail" id="sec-seasonal">
+  <div class="railhead">
+    <svg class="ico"><use href="#ln-calendar"/></svg>
+    <h2>In Season <em class="ac">Now</em></h2>
+    <a class="seeall" href="#sec-seasonal">See all</a>
+  </div>
+  <p class="railsub">Southern Hemisphere windows, so the peak runs opposite to the local calendar. September is spring at origin.</p>
+  <div class="track" id="track-seasonal"></div>
+</section>
+
+<div class="wrap">
+  <div class="addr">
+    <h2>Enter your <em class="ac">Delivery Address</em></h2>
+    <p>So we can confirm the delivery window and which lines clear customs in time for your kitchen.</p>
+    <form class="addrform" id="addrForm">
+      <label class="sr" for="addrInput">Delivery address</label>
+      <input id="addrInput" type="text" placeholder="Street address or postal code" autocomplete="street-address">
+      <button class="btn btn-gold" type="submit">Check delivery</button>
+    </form>
+    <p id="addrMsg" hidden></p>
+  </div>
+</div>
+
+<div class="about" id="about">
+  <div class="wrap">
+    <span class="kicker">About Meridian</span>
+    <h2>Four handlers used to stand between the farm and your kitchen</h2>
+    <p class="lede">We consolidate orders from Singapore's independent grocers, restaurants and hotels at the farm, pack each one to your spec, and freight it direct. No importer. No local warehouse. No fifth set of hands on your produce.</p>
+    <div class="chain">
+      <span class="node">Origin farm</span><span class="arrow">→</span>
+      <span class="node cut">Exporter</span><span class="arrow">→</span>
+      <span class="node cut">SG importer</span><span class="arrow">→</span>
+      <span class="node cut">Wholesaler</span><span class="arrow">→</span>
+      <span class="node end">Your counter</span>
+    </div>
+    <p class="chaincap">Every layer we removed was taking a margin, adding a day, and losing a little of the paperwork that tells you where the food came from.</p>
+    <div class="btnrow" style="display:flex; gap:11px; flex-wrap:wrap; justify-content:center; margin-top:26px">
+      <a class="btn btn-gold" href="#sec-seafood">Shop the consignment</a>
+      <a class="btn btn-line" href="#wholesale">Open a trade account</a>
+    </div>
+  </div>
+</div>
+
+<div class="how">
+  <div class="wrap">
+    <span class="kicker">It's quick &amp; easy</span>
+    <h2>How it works</h2>
+    <div class="hsteps">
+      <div class="hstep">
+        <span class="ring"><svg viewBox="0 0 24 24"><path d="M4 6h16v13a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></span>
+        <div><h3>Order by Thursday</h3><p>Pick your lines and pack sizes off the live consignment list. Your order joins the week's aggregated buy across every Singapore account.</p></div>
+      </div>
+      <div class="hstep">
+        <span class="ring"><svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg></span>
+        <div><h3>Cut and packed to spec</h3><p>Graded at the packhouse, portioned the way your kitchen asked for it, carton marked to your account with its own lot code.</p></div>
+      </div>
+      <div class="hstep">
+        <span class="ring"><svg viewBox="0 0 24 24"><path d="M2 12l9-8v5c6 0 9 4 11 11-3-4-6-5-11-5v5z"/></svg></span>
+        <div><h3>One direct flight</h3><p>A single temperature-controlled movement to Changi. No transhipment, no importer holding stock, no second cold room on the way.</p></div>
+      </div>
+      <div class="hstep">
+        <span class="ring"><svg viewBox="0 0 24 24"><path d="M3 16V8l6-3 6 3v8"/><path d="M15 11h4l2 3v2h-6z"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg></span>
+        <div><h3>Delivered Monday</h3><p>Cleared and on your bench the same morning it lands, typically three to four days from paddock or boat.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="trace" id="trace">
+  <div class="wrap">
+    <span class="kicker">Traceability</span>
+    <h2 style="margin-top:10px">Every carton carries its own paperwork</h2>
+    <p class="lede">A lot code on the box resolves to the paddock, the pack date, the flight and the temperature log. This is the part the legacy chain loses at every hand-off.</p>
+    <div class="tsteps">
+      <div class="tstep"><span class="k">Origin</span><h3>Rangers Valley, NSW</h3><p>Black Angus, 270-day grainfed, MSA graded at the works.</p><p class="stamp num">LOT AU14-BA-0912</p></div>
+      <div class="tstep"><span class="k">Pack</span><h3>Casino packhouse</h3><p>Cut and portioned to your account spec, vacuum sealed, carton marked.</p><p class="stamp num">FRI 19 SEP · 21:40 AEST</p></div>
+      <div class="tstep"><span class="k">Freight</span><h3>BNE to SIN direct</h3><p>Single temperature-controlled movement, no transhipment point.</p><p class="stamp num">0.4 °C MEAN · 0 BREACH</p></div>
+      <div class="tstep"><span class="k">Counter</span><h3>Your kitchen</h3><p>Signed for on delivery. The log attaches to the invoice line automatically.</p><p class="stamp num">MON 22 SEP · 14:10 SGT</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap whole" id="wholesale">
+  <span class="kicker">Wholesale</span>
+  <h2 style="margin-top:12px">Are you a Shop, Restaurant, Bar, Cafe or Hotel?</h2>
+  <p>Open a trade account and buy at aggregated volume without carrying aggregated stock. Four categories on one invoice, one delivery, one account manager, and the origin and cold-chain log on every line you buy.</p>
+  <p style="margin-top:22px"><a class="btn btn-line" href="#top">Open a trade account</a></p>
+</div>
+
+<div class="sub">
+  <div class="wrap">
+    <span class="kicker">Subscribe today</span>
+    <h2>The consignment list, every Monday</h2>
+    <p style="color:var(--text-soft); margin-top:10px">What the desk secured at origin, what is short this week, and what opens next. No marketing, just the list.</p>
+    <form class="subform" id="subForm">
+      <label class="sr" for="subInput">Email address</label>
+      <input id="subInput" type="email" placeholder="Enter your email address" autocomplete="email">
+      <button class="btn btn-gold" type="submit">Subscribe</button>
+    </form>
+    <p id="subMsg" hidden></p>
+  </div>
+</div>
+
+</main>
+
+
+
+
+<div class="auth" id="auth" role="dialog" aria-modal="true" aria-label="Meridian account"><div class="card" id="authCard"></div></div>
+
+<div class="desk" id="desk" role="dialog" aria-modal="true" aria-label="Consignment desk"><div class="inner" id="deskInner"></div></div>
+
+<div class="orderbar" id="orderbar">
+  <span class="sum"><strong id="obCount">0</strong> units on the order &middot; about <strong id="obTotal">S$0.00</strong> landed</span>
+  <button class="btn btn-gold" id="obView" type="button">View order &amp; checkout</button>
+</div>
+
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" hidden aria-label="Your order">
+  <div class="dhead">
+    <div>
+      <h2>Your order</h2>
+      <p id="dSub">Against consignment AU-14, closing Thursday 16:00 SGT</p>
+    </div>
+    <button class="dclose" id="dClose" type="button" aria-label="Close order">&times;</button>
+  </div>
+  <div class="dscroll">
+    <div class="dbody" id="dBody"></div>
+    <div class="dsum">
+      <div class="drow"><span id="dChannelLabel">Trade pricing</span><span><span id="dLines">0</span> lines</span></div>
+      <div class="drow"><span>Goods subtotal</span><span id="dGoods">S$0.00</span></div>
+      <div class="drow"><span>Estimated dead weight</span><span id="dDead">0 kg</span></div>
+      <div class="drow"><span>Estimated volumetric weight</span><span id="dVol">0 kg</span></div>
+      <div class="drow"><span>Estimated chargeable weight, the higher of the two</span><span id="dKg">0 kg</span></div>
+      <div id="dLegs"></div>
+      <div class="drow"><span id="dFreightLabel">Total estimated freight</span><span id="dFreight">S$0.00</span></div>
+      <div class="drow"><span>Duty &amp; clearance</span><span>included</span></div>
+      <p class="dnote" id="dFreightNote">Freight is charged on chargeable weight, which is the higher of dead weight and volumetric weight line by line, at the rate for the current consignment volume, with a S$95 minimum per delivery.</p>
+      <label class="acctlabel" for="dAccount">Ordering as</label>
+      <input class="acctinput" id="dAccount" type="text" placeholder="Your business name" autocomplete="organization">
+    </div>
+  </div>
+  <div class="dfoot">
+    <div class="drow big"><span>Estimated total</span><span id="dTotal">S$0.00</span></div>
+    <button class="btn btn-gold dcta" id="dSubmit" type="button">Checkout</button>
+    <p id="dMsg" hidden></p>
+  </div>
+</aside>
+
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <span class="wordmark" style="font-size:1.25rem">Meridian</span>
+        <p class="ftag">Direct from origin<br>to your counter</p>
+        <div class="pays"><span class="pay">VISA</span><span class="pay">MASTERCARD</span><span class="pay">PAYNOW</span><span class="pay">30-DAY TERMS</span></div>
+        <p style="margin-top:16px"><span class="concept">Concept build</span></p>
+      </div>
+      <div><h4>Categories</h4><ul><li><a href="#sec-seafood">Seafood</a></li><li><a href="#sec-meat">Meat</a></li><li><a href="#sec-produce">Fruit &amp; Veg</a></li><li><a href="#sec-grocery">Grocery</a></li><li><a href="#sec-seasonal">Seasonal</a></li></ul></div>
+      <div><h4>Company</h4><ul><li><a href="#top">Home</a></li><li><a href="#about">About Meridian</a></li><li><a href="#trace">Traceability</a></li><li><a href="#wholesale">Meridian Wholesale</a></li><li><a href="#top">Sourcing standards</a></li><li><a href="#top">Contact the desk</a></li><li><button class="desklink" id="openDesk" type="button">Consignment desk</button></li></ul></div>
+      <div><h4>Ordering</h4><ul><li><a href="#how">Consignment calendar</a></li><li><a href="#top">Where we deliver</a></li><li><a href="#top">Cold chain policy</a></li><li><a href="#top">Special requests</a></li><li><a href="#top">Terms &amp; conditions</a></li></ul></div>
+    </div>
+    <div class="fbot">
+      <span>Meridian · Singapore · a working concept. Product artwork is placeholder illustration, not photography.</span>
+      <button class="themebtn" id="themeBtn">Switch theme</button>
+    </div>
+  </div>
+</footer>
+
+<script>
+var PIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.3 7-11a7 7 0 10-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>';
+
+var LINES = [
+  {cat:"meat", icon:"i-striploin", name:"Black Angus Striploin", mode:"sea", box:{net:25, per:25, dim:[60,40,20]}, desc:"Whole primal, 4.5 to 5.5 kg, 270-day grainfed", trade:58, home:79, unit:"kg", origin:"Rangers Valley, NSW", tag:"au14"},
+  {cat:"meat", icon:"i-ribeye", name:"Wagyu Ribeye MB7+", mode:"air", box:{net:12, per:12, dim:[50,35,15]}, desc:"Portioned 300 g \u00d7 8, full-blood, 450-day fed", trade:142, home:189, unit:"kg", origin:"Darling Downs, QLD", tag:"short"},
+  {cat:"meat", icon:"i-lamb", name:"Frenched Lamb Rack", mode:"sea", box:{net:20, per:20, dim:[60,40,20]}, desc:"Two 8-point racks per pack, new season grassfed", trade:46, home:62, unit:"kg", origin:"Gippsland, VIC", tag:"au14", seasonal:true},
+  {cat:"meat", icon:"i-chicken", name:"Free-Range Chicken", mode:"air", box:{net:12, per:12, dim:[60,40,25]}, desc:"Size 16, air-chilled, six birds per carton", trade:17.5, home:23.8, unit:"kg", origin:"Bannockburn, VIC", tag:"au14"},
+  {cat:"meat", icon:"i-striploin", name:"Grill Programme Box", mode:"sea", box:{net:15, per:15, dim:[60,40,25]}, desc:"Striploin, lamb rack and chicken, portioned", trade:52, home:69, unit:"kg", origin:"Australia", tag:"au14"},
+
+  {cat:"seafood", icon:"i-fish", name:"Ora King Salmon", mode:"air", box:{net:15, per:15, dim:[80,35,25]}, desc:"Whole, head-on, 4 to 5 kg per fish", trade:34, home:47, unit:"kg", origin:"Marlborough Sounds, NZ", tag:"au14"},
+  {cat:"seafood", icon:"i-oyster", name:"Sydney Rock Oysters", mode:"air", box:{net:16, per:12, dim:[50,40,25]}, desc:"Unopened and live, graded bistro, per dozen", trade:19, home:27, unit:"dz", origin:"Wallis Lake, NSW", tag:"short"},
+  {cat:"seafood", icon:"i-prawn", name:"Green Tiger Prawns", mode:"air", box:{net:5, per:5, dim:[40,30,15]}, desc:"Wild-caught U10, 5 kg carton", trade:38, home:52, unit:"kg", origin:"Mooloolaba, QLD", tag:"au14"},
+  {cat:"seafood", icon:"i-crab", name:"Live Spanner Crab", mode:"air", box:{net:10, per:10, dim:[60,40,25]}, desc:"Season open, live tank, 400 to 600 g", trade:46, home:62, unit:"kg", origin:"Fraser Coast, QLD", tag:"new", seasonal:true},
+  {cat:"seafood", icon:"i-abalone", name:"Greenlip Abalone", mode:"air", box:{net:5, per:5, dim:[40,30,20]}, desc:"Live tank, by piece, 180 to 220 g", trade:96, home:128, unit:"kg", origin:"Great Southern, WA", tag:"new"},
+  {cat:"seafood", icon:"i-platter", name:"Raw Bar Selection", mode:"air", box:{net:8, per:1, dim:[60,40,20]}, desc:"3 dz oysters, 2 kg U10 prawns, 2 kg sashimi salmon, iced", trade:288, home:389, unit:"crate", origin:"Mixed origin", tag:"au14"},
+
+  {cat:"produce", icon:"i-apple", name:"Pink Lady Apples", mode:"sea", box:{net:18, per:18, dim:[50,33,30]}, desc:"Premium class 1, 18 kg tray, count 100", trade:6.4, home:9.2, unit:"kg", origin:"Batlow, NSW", tag:"au14"},
+  {cat:"produce", icon:"i-tomato", name:"Truss Tomatoes", mode:"sea", box:{net:5, per:5, dim:[40,30,12]}, desc:"Glasshouse, vine-ripened, 5 kg box", trade:8.1, home:11.5, unit:"kg", origin:"Guyra, NSW", tag:"au14"},
+  {cat:"produce", icon:"i-avocado", name:"Hass Avocado", mode:"sea", box:{net:5.5, per:5.5, dim:[40,30,12]}, desc:"Count 20, firm-ripe, 5.5 kg tray", trade:9.8, home:13.4, unit:"kg", origin:"Bundaberg, QLD", tag:"short"},
+  {cat:"produce", icon:"i-cos", name:"Baby Cos Lettuce", mode:"air", box:{net:4.8, per:4.8, dim:[50,30,16]}, desc:"Hydroponic twin packs, 12 per case", trade:10.8, home:14.6, unit:"kg", origin:"Werribee South, VIC", tag:"au14"},
+  {cat:"produce", icon:"i-cos", name:"Bunched Asparagus", mode:"air", box:{net:2.5, per:2.5, dim:[40,30,15]}, desc:"Season open, 10 bunches per case", trade:19.5, home:26.4, unit:"kg", origin:"Koo Wee Rup, VIC", tag:"new", seasonal:true},
+  {cat:"produce", icon:"i-cherry", name:"Cherries, Early Pick", mode:"air", box:{net:5, per:5, dim:[40,30,15]}, desc:"Pre-order for the November window", trade:32, home:44, unit:"kg", origin:"Young, NSW", tag:"pre", seasonal:true},
+  {cat:"produce", icon:"i-mango", name:"Kensington Pride Mango", mode:"sea", box:{net:7, per:7, dim:[50,33,15]}, desc:"Pre-order, first NT fruit lands October", trade:11.8, home:16.2, unit:"kg", origin:"Katherine, NT", tag:"pre", seasonal:true},
+  {cat:"produce", icon:"i-crate", name:"Market Garden Crate", mode:"air", box:{net:10, per:10, dim:[60,40,25]}, desc:"Whatever the desk secured best that week", trade:15.0, home:20.4, unit:"kg", origin:"Australia, NZ", tag:"au14"},
+  {cat:"produce", icon:"i-leafmix", name:"Rocket & Baby Leaf", mode:"air", box:{net:3, per:3, dim:[50,30,16]}, desc:"Washed, 150 g clamshell × 20, cut this morning", trade:22.0, home:29.8, unit:"kg", origin:"Bacchus Marsh, VIC", tag:"au14"},
+  {cat:"produce", icon:"i-herb", name:"Mixed Herb Box", mode:"air", box:{net:2, per:2, dim:[50,30,16]}, desc:"Coriander, basil and mint, 10 bunches each", trade:36.0, home:48.6, unit:"kg", origin:"Sunshine Coast, QLD", tag:"au14"},
+  {cat:"produce", icon:"i-leafmix", name:"Tasmanian Watercress", mode:"air", box:{net:2.4, per:2.4, dim:[40,30,16]}, desc:"Spring-fed beds, 12 bunches per case", trade:24.0, home:32.4, unit:"kg", origin:"Derwent Valley, TAS", tag:"short"},
+  {cat:"produce", icon:"i-cos", name:"Living Butterhead", mode:"air", box:{net:3.6, per:3.6, dim:[50,30,16]}, desc:"Root attached in pots, 12 per case, keeps ten days", trade:14.0, home:18.9, unit:"kg", origin:"Werribee South, VIC", tag:"new"},
+
+  {cat:"grocery", icon:"i-butter", name:"Cultured Salted Butter", mode:"sea", box:{net:4, per:4, dim:[30,25,15]}, desc:"Churned to order, 200 g \u00d7 20", trade:11.2, home:15.8, unit:"kg", origin:"Sydney, NSW", tag:"au14"},
+  {cat:"grocery", icon:"i-cheese", name:"Farmhouse Cheddar", mode:"sea", box:{net:10, per:10, dim:[40,30,20]}, desc:"Clothbound, 18 month, quarter wheels", trade:38, home:52, unit:"kg", origin:"Pyengana, TAS", tag:"au14"},
+  {cat:"grocery", icon:"i-honey", name:"Manuka Honey UMF 15+", mode:"sea", box:{net:6, per:6, dim:[35,25,20]}, desc:"Certified UMF, 500 g jar \u00d7 12", trade:64, home:86, unit:"kg", origin:"Bay of Plenty, NZ", tag:"au14"},
+  {cat:"grocery", icon:"i-oil", name:"New Season Olive Oil", mode:"sea", box:{net:11, per:12, dim:[35,25,30]}, desc:"First press, 3 L tin \u00d7 4", trade:18.5, home:24.9, unit:"L", origin:"Wingara, VIC", tag:"new", seasonal:true},
+  {cat:"grocery", icon:"i-crate", name:"Chef's Mixed Crate", mode:"air", box:{net:12, per:12, dim:[60,40,30]}, desc:"Weekly pick across all four lines, 12 kg", trade:21, home:29, unit:"kg", origin:"Mixed origin", tag:"au14"}
+];
+
+var TAGS = {
+  au14: {cls:"navy", text:"Held for AU-14"},
+  short: {cls:"gold", text:"Short supply"},
+  new: {cls:"sea", text:"New line"},
+  pre: {cls:"stone", text:"Pre-order"}
+};
+
+var channel = "trade", basket = {}, qty = {};
+
+function money(v){ return (v < 20 ? v.toFixed(2) : v.toFixed(0)); }
+
+function cardFor(item, i){
+  var card = document.createElement("article");
+  card.className = "card";
+  var p = channel === "trade" ? item.trade : item.home;
+  var tag = TAGS[item.tag] || {cls:"navy", text:"Available"};
+
+  card.innerHTML =
+    '<div class="shot">' +
+      '<svg role="img" aria-label="' + item.name + '"><use href="#' + item.icon + '"/></svg>' +
+      '<span class="ph-note">Placeholder</span>' +
+      '<span class="sticker ' + tag.cls + '">' + tag.text + '</span>' +
+    '</div>' +
+    '<div class="body">' +
+      '<h3>' + item.name + '</h3>' +
+      '<p class="desc">' + item.desc + '</p>' +
+      '<p class="price"><sup>S$</sup>' + money(p) + ' <span class="per">per ' + item.unit + '</span></p>' +
+      '<p class="origin">' + PIN + item.origin + '</p>' +
+    '</div>' +
+    '<div class="qtybar">' +
+      '<div class="stepper">' +
+        '<button class="stepbtn" type="button" data-step="-1" aria-label="Fewer ' + item.name + '">&minus;</button>' +
+        '<span class="qtywrap">' +
+          '<input class="qty" type="text" inputmode="numeric" value="0" aria-label="Quantity of ' + item.name + ' in ' + item.unit + '">' +
+          '<span class="qunit">' + item.unit + '</span>' +
+        '</span>' +
+        '<button class="stepbtn" type="button" data-step="1" aria-label="More ' + item.name + '">+</button>' +
+      '</div>' +
+    '</div>';
+
+  var input = card.querySelector(".qty");
+  var minus = card.querySelector('[data-step="-1"]');
+
+  if (qty[i] === undefined) qty[i] = 0;
+  input.value = qty[i];
+  card.classList.toggle("added", qty[i] > 0);
+  minus.disabled = qty[i] <= 0;
+
+  function setQty(v){
+    v = Math.max(0, Math.min(999, isNaN(v) ? 0 : v));
+    qty[i] = v;
+    input.value = v;
+    minus.disabled = v <= 0;
+    if (v > 0) basket[i] = true; else delete basket[i];
+    card.classList.toggle("added", v > 0);
+    updateCount();
+    if (typeof drawer !== "undefined" && drawer && !drawer.hidden) renderDrawer();
+  }
+
+  Array.prototype.forEach.call(card.querySelectorAll(".stepbtn"), function(b){
+    b.addEventListener("click", function(){ setQty((qty[i] || 0) + parseInt(b.dataset.step, 10)); });
+  });
+
+  input.addEventListener("blur", function(){ setQty(parseInt(input.value, 10)); });
+  input.addEventListener("keydown", function(e){
+    if (e.key === "Enter"){ e.preventDefault(); input.blur(); }
+    if (e.key === "ArrowUp"){ e.preventDefault(); setQty((qty[i] || 0) + 1); }
+    if (e.key === "ArrowDown"){ e.preventDefault(); setQty((qty[i] || 0) - 1); }
+  });
+
+  return card;
+}
+
+var SECTIONS = ["seafood", "meat", "produce", "grocery", "seasonal"];
+
+function render(){
+  SECTIONS.forEach(function(key){
+    var track = document.getElementById("track-" + key);
+    if (!track) return;
+    track.innerHTML = "";
+    LINES.forEach(function(item, i){
+      var belongs = key === "seasonal" ? !!item.seasonal : item.cat === key;
+      if (belongs) track.appendChild(cardFor(item, i));
+    });
+  });
+}
+
+function updateCount(){
+  if (typeof syncOrderBar === "function") syncOrderBar();
+  var units = 0;
+  Object.keys(basket).forEach(function(k){ units += (qty[k] || 1); });
+  document.getElementById("count").textContent = units;
+}
+
+/* ---- mega menu ---- */
+var meganav = document.getElementById("meganav");
+var triggers = Array.prototype.slice.call(document.querySelectorAll(".mtrigger[data-panel]"));
+var hoverable = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+function closeMenus(){
+  triggers.forEach(function(t){
+    t.setAttribute("aria-expanded", "false");
+    document.getElementById(t.dataset.panel).hidden = true;
+  });
+}
+function openMenu(t){
+  closeMenus();
+  t.setAttribute("aria-expanded", "true");
+  document.getElementById(t.dataset.panel).hidden = false;
+}
+
+triggers.forEach(function(t){
+  t.addEventListener("click", function(e){
+    var isOpen = t.getAttribute("aria-expanded") === "true";
+    if (!hoverable && !isOpen){ e.preventDefault(); openMenu(t); return; }
+    closeMenus();
+  });
+  if (hoverable){
+    t.addEventListener("mouseenter", function(){ openMenu(t); });
+    t.addEventListener("focus", function(){ openMenu(t); });
+  }
+});
+
+if (hoverable){
+  meganav.addEventListener("mouseleave", closeMenus);
+}
+document.addEventListener("keydown", function(e){
+  if (e.key === "Escape") closeMenus();
+});
+document.addEventListener("click", function(e){
+  if (!meganav.contains(e.target)) closeMenus();
+});
+
+var chTrade = document.getElementById("chTrade"), chHome = document.getElementById("chHome");
+function setChannel(next){
+  channel = next;
+  chTrade.setAttribute("aria-pressed", next === "trade" ? "true" : "false");
+  chHome.setAttribute("aria-pressed", next === "home" ? "true" : "false");
+  render();
+  if (!drawer.hidden) renderDrawer();
+}
+chTrade.addEventListener("click", function(){ setChannel("trade"); });
+chHome.addEventListener("click", function(){ setChannel("home"); });
+
+
+/* ---- order drawer ---- */
+var drawer = document.getElementById("drawer");
+var scrim = document.getElementById("scrim");
+
+function fmt(v){ return "S$" + v.toFixed(2); }
+function priceOf(item){ return channel === "trade" ? item.trade : item.home; }
+
+function renderDrawer(){
+  var body = document.getElementById("dBody");
+  var keys = Object.keys(basket);
+  body.innerHTML = "";
+
+  if (!keys.length){
+    body.innerHTML = '<div class="dempty"><strong>Nothing on the order yet</strong>' +
+      'Add lines from the consignment and they collect here.</div>';
+  }
+
+  var total = 0;
+  keys.forEach(function(k){
+    var item = LINES[k];
+    var n = qty[k] || 1;
+    var line = priceOf(item) * n;
+    total += line;
+
+    var row = document.createElement("div");
+    row.className = "dline";
+    row.innerHTML =
+      '<div class="shot"><svg role="img" aria-label="' + item.name + '"><use href="#' + item.icon + '"/></svg></div>' +
+      '<div><p class="dname">' + item.name + '</p>' +
+      '<p class="dmeta">' + fmt(priceOf(item)) + ' per ' + item.unit + ' &middot; ' + item.origin + '</p>' +
+      '<div class="dctrl">' +
+        '<span class="dstep">' +
+          '<button type="button" data-step="-1" aria-label="Decrease">&minus;</button>' +
+          '<input type="text" inputmode="numeric" value="' + n + '" aria-label="Quantity for ' + item.name + '">' +
+          '<span class="u">' + item.unit + '</span>' +
+          '<button type="button" data-step="1" aria-label="Increase">+</button>' +
+        '</span>' +
+        '<button class="drm" type="button">Remove</button>' +
+      '</div></div>' +
+      '<span class="dtotal">' + fmt(line) + '</span>';
+
+    var input = row.querySelector("input");
+    function set(v){
+      v = Math.max(1, Math.min(999, v || 1));
+      qty[k] = v;
+      updateCount(); renderDrawer(); render();
+    }
+    Array.prototype.forEach.call(row.querySelectorAll("[data-step]"), function(b){
+      b.addEventListener("click", function(){ set((qty[k] || 1) + parseInt(b.dataset.step, 10)); });
+    });
+    input.addEventListener("change", function(){ set(parseInt(input.value.replace(/[^0-9]/g, ""), 10)); });
+    row.querySelector(".drm").addEventListener("click", function(){
+      delete basket[k]; qty[k] = 0;
+      updateCount(); renderDrawer(); render();
+    });
+
+    body.appendChild(row);
+  });
+
+  var freight = freightFor(total);
+  document.getElementById("dLines").textContent = keys.length;
+  document.getElementById("dGoods").textContent = fmt(total);
+  var kgTxt = function(v){ return (Math.round(v * 10) / 10).toLocaleString() + " kg"; };
+  document.getElementById("dDead").textContent = kgTxt(freight.w.dead);
+  document.getElementById("dVol").textContent = kgTxt(freight.w.vol);
+  document.getElementById("dKg").textContent = kgTxt(freight.kg);
+
+  document.getElementById("dLegs").innerHTML = freight.legs.map(function(leg){
+    return '<div class="drow"><span>' + leg.label + ', ' + kgTxt(leg.kg) + ' at ' +
+      leg.tier.label + '</span><span>S$' + leg.rate.toFixed(2) + ' per kg &middot; ' +
+      fmt(leg.amount) + '</span></div>';
+  }).join("");
+
+  document.getElementById("dFreight").textContent = fmt(freight.cost);
+  document.getElementById("dFreightLabel").textContent =
+    freight.minimum ? "Total estimated freight, minimum per delivery" : "Total estimated freight";
+  document.getElementById("dTotal").textContent = fmt(total + freight.cost);
+
+  var calc = freight.minimum
+    ? "The legs above come to " + fmt(freight.raw) + ", below the S$" + FREIGHT_MIN.toFixed(2) +
+      " minimum per delivery, so the minimum applies. "
+    : "";
+  var splitNote = freight.split
+    ? "This order travels two ways, so it arrives in two deliveries. The air part " +
+      MODES.air.lead + ", the sea part " + MODES.sea.lead + ". "
+    : freight.legs.length === 1
+      ? "This order goes by " + freight.legs[0].label.toLowerCase() + " and " + freight.legs[0].lead + ". "
+      : "";
+  var cubeNote = freight.w && freight.w.cubed
+    ? freight.w.cubed + (freight.w.cubed === 1 ? " line takes" : " lines take") +
+      " more space than it weighs, so that part is charged on cube. "
+    : "";
+  document.getElementById("dFreightNote").textContent = keys.length
+    ? splitNote + cubeNote + calc + "Each rate drops as that consignment fills, so these figures move as other stores order. The desk confirms actual weights and cube at the packhouse before anything is charged."
+    : "Freight is charged on chargeable weight, the higher of dead weight and volumetric weight line by line, at the rate for the current consignment volume. Air lands in 2 days, sea reefer in 12.";
+  document.getElementById("dChannelLabel").textContent = channel === "trade" ? "Trade pricing" : "Consumer pricing";
+  document.getElementById("dSubmit").disabled = !keys.length;
+  document.getElementById("dSubmit").style.opacity = keys.length ? "1" : ".45";
+  syncOrderBar();
+}
+
+function openDrawer(){
+  renderDrawer();
+  try {
+    var saved = localStorage.getItem("meridian.account");
+    var el = document.getElementById("dAccount");
+    if (saved && el && !el.value) el.value = saved;
+  } catch (e) {}
+  scrim.hidden = false; drawer.hidden = false;
+  requestAnimationFrame(function(){ scrim.classList.add("on"); drawer.classList.add("on"); });
+  document.getElementById("dClose").focus();
+}
+function closeDrawer(){
+  scrim.classList.remove("on"); drawer.classList.remove("on");
+  setTimeout(function(){ scrim.hidden = true; drawer.hidden = true; }, 240);
+}
+
+document.getElementById("dClose").addEventListener("click", closeDrawer);
+scrim.addEventListener("click", closeDrawer);
+document.addEventListener("keydown", function(e){ if (e.key === "Escape" && !drawer.hidden) closeDrawer(); });
+
+var CHARGE_MULT = {kg:1, dz:0.6, L:0.9, crate:4};
+/* Two ways in. Air is fast and dear, for anything with a short life or a high
+   value per kg. Sea reefer is slow and cheap, for sturdy produce, chilled vac-pack
+   meat and ambient grocery. Each line is tagged with the one it travels on, and
+   each mode has its own volume tiers driven by that mode's consignment fill. */
+var MODES = {
+  air: {label:"Air", lead:"lands in 2 days", min:95, tiers:[
+    {upTo:1000,  rate:4.60, label:"under 1,000 kg"},
+    {upTo:2500,  rate:3.80, label:"1,000 to 2,500 kg"},
+    {upTo:4000,  rate:3.20, label:"2,500 to 4,000 kg"},
+    {upTo:Infinity, rate:2.70, label:"over 4,000 kg"}
+  ]},
+  sea: {label:"Sea reefer", lead:"lands in 12 days", min:60, tiers:[
+    {upTo:5000,  rate:0.95, label:"under 5,000 kg"},
+    {upTo:15000, rate:0.78, label:"5,000 to 15,000 kg"},
+    {upTo:Infinity, rate:0.62, label:"over 15,000 kg"}
+  ]}
+};
+var FREIGHT_MIN = 95;
+var FREIGHT_TIERS = MODES.air.tiers;
+
+function chargeableOf(unit, n){ return (CHARGE_MULT[unit] || 1) * n; }
+
+/* Freight is charged on the greater of dead weight and volumetric weight, line
+   by line. Volumetric kg is the carton's cube in cm divided by DIM_DIVISOR, the
+   airfreight convention. Each line carries its carton spec: net kg per case,
+   how many of the priced unit are in that case, and the carton's outside
+   dimensions. Dense lines fail on weight, airy lines fail on cube. */
+var DIM_DIVISOR = 6000;
+
+function deadPerUnit(item){
+  if (!item || !item.box) return CHARGE_MULT[item && item.unit] || 1;
+  return item.box.net / item.box.per;
+}
+function volPerUnit(item){
+  if (!item || !item.box) return CHARGE_MULT[item && item.unit] || 1;
+  var d = item.box.dim;
+  return (d[0] * d[1] * d[2] / DIM_DIVISOR) / item.box.per;
+}
+function deadKg(item, n){ return deadPerUnit(item) * n; }
+function volKg(item, n){ return volPerUnit(item) * n; }
+function chargeKg(item, n){ return Math.max(deadKg(item, n), volKg(item, n)); }
+function cubedLine(item){ return volPerUnit(item) > deadPerUnit(item); }
+
+function lineChargeKg(l){
+  var item = (typeof LINES !== "undefined" && LINES[l.i]) ? LINES[l.i] : null;
+  return item ? chargeKg(item, l.qty) : chargeableOf(l.unit, l.qty);
+}
+
+function modeOf(item){ return (item && item.mode) === "sea" ? "sea" : "air"; }
+function lineMode(l){
+  var item = (typeof LINES !== "undefined" && LINES[l.i]) ? LINES[l.i] : null;
+  return item ? modeOf(item) : (l.mode === "sea" ? "sea" : "air");
+}
+
+/* Pooled kg already on the books, split by how it travels. Each mode's tier is
+   set by its own fill, so a heavy sea order does not cheapen the air rate. */
+function consignmentByMode(){
+  var out = {air:0, sea:0};
+  if (typeof ORDERS === "undefined" || !ORDERS.length) return out;
+  ORDERS.forEach(function(o){
+    (o.lines || []).forEach(function(l){ out[lineMode(l)] += lineChargeKg(l); });
+  });
+  return out;
+}
+function consignmentKg(){
+  var c = consignmentByMode();
+  return c.air + c.sea;
+}
+
+function tierFor(mode, kg){
+  var t = MODES[mode].tiers;
+  for (var i = 0; i < t.length; i++){ if (kg < t[i].upTo) return t[i]; }
+  return t[t.length - 1];
+}
+function freightTier(kg){ return tierFor("air", kg); }
+
+function goodsTotal(){
+  var t = 0;
+  Object.keys(basket).forEach(function(k){ t += priceOf(LINES[k]) * (qty[k] || 1); });
+  return t;
+}
+
+function basketWeights(){
+  var w = {dead:0, vol:0, charge:0, cubed:0,
+           air:{dead:0, vol:0, charge:0, lines:0},
+           sea:{dead:0, vol:0, charge:0, lines:0}};
+  Object.keys(basket).forEach(function(k){
+    var item = LINES[k], n = qty[k] || 1, m = modeOf(item);
+    var d = deadKg(item, n), v = volKg(item, n), c = Math.max(d, v);
+    w.dead += d; w.vol += v; w.charge += c;
+    if (v > d) w.cubed++;
+    w[m].dead += d; w[m].vol += v; w[m].charge += c; w[m].lines++;
+  });
+  return w;
+}
+
+function freightFor(){
+  var keys = Object.keys(basket);
+  var w = basketWeights();
+  var pooled = consignmentByMode();
+  var legs = [], cost = 0;
+
+  ["air", "sea"].forEach(function(m){
+    if (w[m].charge <= 0) return;
+    var tier = tierFor(m, pooled[m] || w[m].charge);
+    var amount = tier.rate * w[m].charge;
+    legs.push({mode:m, label:MODES[m].label, lead:MODES[m].lead, kg:w[m].charge,
+               rate:tier.rate, tier:tier, amount:amount, lines:w[m].lines});
+    cost += amount;
+  });
+
+  var raw = cost;
+  var minimum = keys.length > 0 && raw < FREIGHT_MIN;
+  if (minimum) cost = FREIGHT_MIN;
+
+  return {cost:keys.length ? cost : 0, raw:raw, minimum:minimum, legs:legs,
+          kg:w.charge, w:w, split:legs.length > 1};
+}
+
+function orderTotal(){
+  var goods = goodsTotal();
+  return goods + freightFor(goods).cost;
+}
+
+function syncOrderBar(){
+  var bar = document.getElementById("orderbar");
+  var units = 0;
+  Object.keys(basket).forEach(function(k){ units += (qty[k] || 1); });
+  document.getElementById("obCount").textContent = units;
+  document.getElementById("obTotal").textContent = fmt(orderTotal());
+  bar.classList.toggle("on", Object.keys(basket).length > 0);
+}
+
+document.getElementById("obView").addEventListener("click", openDrawer);
+
+
+document.getElementById("dSubmit").addEventListener("click", function(){
+  var keys = Object.keys(basket);
+  if (!keys.length) return;
+  if (!signedIn() || !activeStore()){ closeDrawer(); setTimeout(function(){ openAuth(); }, 200); return; }
+
+  var ref = "MER-AU14-" + String(1000 + Math.floor(Math.random() * 8999));
+  var units = 0;
+  keys.forEach(function(k){ units += (qty[k] || 1); });
+
+  document.getElementById("dBody").innerHTML =
+    '<div class="confirm">' +
+      '<div class="tick">&#10003;</div>' +
+      '<h3>Order placed against AU-14</h3>' +
+      '<p>' + keys.length + ' lines, ' + units + ' units, estimated ' + fmt(orderTotal()) + ' landed Singapore including freight.</p>' +
+      '<p style="margin-top:10px">Packed at origin Friday, wheels up Sunday, on your bench <strong>Monday between 14:00 and 18:00</strong>. ' +
+      'The desk confirms final weights before cut-off on Thursday.</p>' +
+      '<span class="ref">' + ref + '</span>' +
+    '</div>';
+
+  var who = accountName();
+  try { if (who) localStorage.setItem("meridian.account", who); } catch (e) {}
+
+  if (dbNs){
+    var payload = {
+      ref: ref,
+      account: (activeStore() && activeStore().business) || who || "Unnamed account",
+      storeId: activeStore() ? activeStore().id : "",
+      accountId: session ? session.email : "",
+      accountStatus: (activeStore() && activeStore().status) || "unregistered",
+      placedAt: new Date().toISOString(),
+      channel: channel,
+      goods: goodsTotal(),
+      freight: freightFor(goodsTotal()).cost,
+      total: orderTotal(),
+      lines: keys.map(function(k){
+        var it = LINES[k];
+        return {i:+k, name:it.name, unit:it.unit, origin:it.origin, qty:qty[k] || 1, price:priceOf(it)};
+      })
+    };
+    dbNs.collection("orders").add(payload).catch(function(){});
+  }
+
+  document.getElementById("dSubmit").textContent = "Start another order";
+  document.getElementById("dSubmit").onclick = function(){
+    basket = {}; qty = {};
+    document.getElementById("dSubmit").textContent = "Checkout";
+    document.getElementById("dSubmit").onclick = null;
+    updateCount(); render(); renderDrawer(); syncOrderBar(); closeDrawer();
+  };
+});
+
+
+/* ---- local store, used when the page runs outside Claude ----
+   Inside Claude the page talks to the shared artifact database, so every store
+   sees the same order book. Hosted anywhere else that database does not exist,
+   so we fall back to this: the same handful of calls, backed by localStorage.
+   It keeps the page fully working standalone. The one thing it cannot do is
+   share: each browser holds its own copy, and nothing crosses between machines. */
+function localDb(){
+  var KEY = "meridian.localdb";
+  var watchers = [];
+
+  function read(){
+    try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; }
+  }
+  function write(all){
+    try { localStorage.setItem(KEY, JSON.stringify(all)); } catch (e) {}
+    fire();
+  }
+  function fire(){ watchers.forEach(function(w){ try { w(); } catch (e) {} }); }
+  function newId(){ return "l" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+
+  function snapOf(name, opts){
+    var bag = read()[name] || {};
+    var rows = Object.keys(bag).map(function(id){
+      return {id:id, exists:true, data:function(){ return bag[id]; }};
+    });
+    if (opts && opts.order){
+      var f = opts.order.field, dir = opts.order.dir === "asc" ? 1 : -1;
+      rows.sort(function(a, b){
+        var x = a.data()[f], y = b.data()[f];
+        return x === y ? 0 : (x > y ? dir : -dir);
+      });
+    }
+    if (opts && opts.max) rows = rows.slice(0, opts.max);
+    return {docs:rows, size:rows.length};
+  }
+
+  function query(name, opts){
+    return {
+      orderBy: function(field, dir){
+        return query(name, Object.assign({}, opts, {order:{field:field, dir:dir}}));
+      },
+      limit: function(n){ return query(name, Object.assign({}, opts, {max:n})); },
+      get: function(){ return Promise.resolve(snapOf(name, opts)); },
+      onSnapshot: function(cb){
+        var push = function(){ cb(snapOf(name, opts)); };
+        watchers.push(push);
+        push();
+        return function(){ watchers = watchers.filter(function(w){ return w !== push; }); };
+      },
+      add: function(data){
+        var all = read();
+        all[name] = all[name] || {};
+        var id = newId();
+        all[name][id] = data;
+        write(all);
+        return Promise.resolve({id:id});
+      }
+    };
+  }
+
+  // other tabs on the same browser
+  try {
+    window.addEventListener("storage", function(e){ if (e.key === KEY) fire(); });
+  } catch (e) {}
+
+  return {
+    local: true,
+    collection: function(name){ return query(name, {}); },
+    doc: function(path){
+      var bits = path.split("/"), name = bits[0], id = bits.slice(1).join("/");
+      return {
+        get: function(){
+          var bag = read()[name] || {};
+          var has = Object.prototype.hasOwnProperty.call(bag, id);
+          return Promise.resolve({exists:has, id:id, data:function(){ return bag[id]; }});
+        },
+        set: function(data){
+          var all = read(); all[name] = all[name] || {}; all[name][id] = data; write(all);
+          return Promise.resolve();
+        },
+        update: function(patch){
+          var all = read(); all[name] = all[name] || {};
+          all[name][id] = Object.assign({}, all[name][id] || {}, patch); write(all);
+          return Promise.resolve();
+        },
+        delete: function(){
+          var all = read(); if (all[name]) delete all[name][id]; write(all);
+          return Promise.resolve();
+        }
+      };
+    }
+  };
+}
+
+/* ---- consignment desk: real orders, pooled ---- */
+var CAPACITY_KG = 4500;
+var deskEl = document.getElementById("desk");
+var deskTab = "buy";
+var ORDERS = [];
+var dbNs = null;
+var dbState = "loading";
+
+function accountName(){
+  var el = document.getElementById("dAccount");
+  var v = el && el.value.trim();
+  if (v) return v;
+  try { return localStorage.getItem("meridian.account") || ""; } catch (e) { return ""; }
+}
+
+/* ---- Meridian's own sign-in ---- */
+var SESSION_KEY = "meridian.session";
+var authEl = document.getElementById("auth");
+var session = null;          // {email}
+var myAccount = null;        // accounts/<emailKey>
+var acctUnsub = null;
+var iCanEdit = false;
+var ACCOUNTS = [];
+var authStep = "login";
+var pending = null;          // {email, code, isNew}
+
+function emailKey(e){ return String(e || "").trim().toLowerCase().replace(/[^a-z0-9_\-.~:@+]/g, "_"); }
+function validEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(e || "").trim()); }
+function newCode(){ return String(Math.floor(100000 + Math.random() * 900000)); }
+
+function loadSession(){
+  try {
+    var raw = localStorage.getItem(SESSION_KEY);
+    session = raw ? JSON.parse(raw) : null;
+  } catch (e) { session = null; }
+}
+function saveSession(v){
+  session = v;
+  try { v ? localStorage.setItem(SESSION_KEY, JSON.stringify(v)) : localStorage.removeItem(SESSION_KEY); } catch (e) {}
+}
+
+function watchOrders(d){
+  d.collection("orders").orderBy("placedAt", "desc").limit(500).onSnapshot(function(snap){
+    ORDERS = snap.docs.map(function(doc){ var x = Object.assign({}, doc.data()); x._id = doc.id; return x; });
+    if (deskEl.classList.contains("on")) renderDesk();
+    if (!drawer.hidden) renderDrawer();
+    syncOrderBar();
+  }, function(){ dbState = "off"; });
+}
+function watchAccounts(d){
+  d.collection("accounts").limit(500).onSnapshot(function(snap){
+    ACCOUNTS = snap.docs.map(function(doc){ var x = Object.assign({}, doc.data()); x._id = doc.id; return x; });
+    if (session){
+      var mine = ACCOUNTS.filter(function(x){ return x._id === emailKey(session.email); })[0];
+      myAccount = mine || null;
+      paintAccount();
+    }
+    if (deskEl.classList.contains("on")) renderDesk();
+  }, function(){});
+}
+
+loadSession();
+
+function useCap(name){
+  try { return Promise.resolve(claude.use(name)).catch(function(){ return null; }); }
+  catch (e) { return Promise.resolve(null); }
+}
+
+function startDb(d, userCap){
+  dbNs = d;
+  dbState = "on";
+  if (d.local) iCanEdit = true;   // standalone: one person, so they run the desk
+  watchOrders(d);
+  watchAccounts(d);
+  if (session && session.email){
+    d.doc("accounts/" + emailKey(session.email)).get().then(function(snap){
+      if (snap.exists){ myAccount = Object.assign({_id:emailKey(session.email)}, snap.data()); }
+      else { saveSession(null); }
+      paintAccount();
+    }).catch(function(){});
+  }
+  if (userCap){
+    try { Promise.resolve(userCap.canEdit()).then(function(v){
+      iCanEdit = !!v;
+      if (deskEl.classList.contains("on")) renderDesk();
+    }).catch(function(){}); } catch (e) {}
+  }
+  paintAccount();
+}
+
+if (window.claude && typeof claude.use === "function"){
+  Promise.all([useCap("db"), useCap("user")]).then(function(r){
+    startDb(r[0] || localDb(), r[1]);
+  }).catch(function(){ startDb(localDb(), null); });
+} else {
+  startDb(localDb(), null);
+}
+
+function storeList(){ return (myAccount && myAccount.stores) || []; }
+
+function activeStore(){
+  var list = storeList();
+  if (!list.length) return null;
+  var id = null;
+  try { id = localStorage.getItem("meridian.store"); } catch (e) {}
+  return list.filter(function(st){ return st.id === id; })[0] || list[0] || null;
+}
+function setActiveStore(id){
+  try { id ? localStorage.setItem("meridian.store", id) : localStorage.removeItem("meridian.store"); } catch (e) {}
+  paintAccount();
+  if (!drawer.hidden) renderDrawer();
+}
+
+function signedIn(){ return !!(session && session.email); }
+
+function paintAccount(){
+  var label = document.getElementById("acctLabel");
+  var btn = document.getElementById("acctBtn");
+  if (!label || !btn) return;
+  var pip = btn.querySelector(".pipd");
+  if (pip) pip.remove();
+
+  if (signedIn()){
+    var st = activeStore();
+    label.textContent = st ? st.business : (session.email.split("@")[0]);
+    var dot = document.createElement("span");
+    dot.className = "pipd" + (st && st.status === "approved" ? "" : " pend");
+    btn.appendChild(dot);
+  } else {
+    label.textContent = "Sign in";
+  }
+  var el = document.getElementById("dAccount");
+  if (el) el.value = (activeStore() && activeStore().business) || "";
+}
+
+function openAuth(step){ authStep = step || (signedIn() ? "account" : "login"); renderAuth(); authEl.classList.add("on"); document.body.style.overflow = "hidden"; window.scrollTo(0, 0); }
+function closeAuth(){ authEl.classList.remove("on"); document.body.style.overflow = ""; }
+
+function saveAccount(doc, onDone, onFail){
+  if (!dbNs || !session){ if (onFail) onFail(); return; }
+  if (myAccount){
+    doc.salt = myAccount.salt; doc.hash = myAccount.hash;
+    doc.createdAt = myAccount.createdAt || doc.updatedAt;
+  }
+  dbNs.doc("accounts/" + emailKey(session.email)).set(doc).then(function(){
+    myAccount = doc; paintAccount(); if (onDone) onDone();
+  }).catch(function(){ if (onFail) onFail(); });
+}
+
+var IC_MAIL = '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5l8.5 6 8.5-6"/></svg>';
+var IC_LOCK = '<svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>';
+var IC_EYE  = '<svg viewBox="0 0 24 24"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="2.6"/></svg>';
+
+function hashPw(pw, salt){
+  var txt = salt + ":" + pw;
+  if (window.crypto && crypto.subtle && crypto.subtle.digest){
+    return crypto.subtle.digest("SHA-256", new TextEncoder().encode(txt)).then(function(buf){
+      return Array.prototype.map.call(new Uint8Array(buf), function(b){ return b.toString(16).padStart(2, "0"); }).join("");
+    });
+  }
+  var h = 5381;
+  for (var i = 0; i < txt.length; i++) h = ((h << 5) + h + txt.charCodeAt(i)) >>> 0;
+  return Promise.resolve("f" + h.toString(16));
+}
+function newSalt(){ return Math.random().toString(36).slice(2) + Date.now().toString(36); }
+function accountFor(email){ return ACCOUNTS.filter(function(x){ return x._id === emailKey(email); })[0] || null; }
+
+function shell(inner, wide){
+  return '<div class="authwrap' + (wide ? " wide" : "") + '">' +
+    '<button class="authx" type="button" id="authX" aria-label="Close">&times;</button>' +
+    '<div class="authcard">' + inner + '</div></div>';
+}
+function wireX(){
+  var x = document.getElementById("authX");
+  if (x) x.addEventListener("click", closeAuth);
+}
+function wireEyes(){
+  Array.prototype.forEach.call(document.querySelectorAll(".eye"), function(b){
+    b.addEventListener("click", function(){
+      var inp = b.parentNode.querySelector("input");
+      inp.type = inp.type === "password" ? "text" : "password";
+    });
+  });
+}
+
+function renderAuth(){
+  var card = document.getElementById("authCard");
+
+  if (authStep === "login" || authStep === "email"){
+    card.innerHTML = shell(
+      '<div class="ahead"><div><h2>Login</h2></div><span class="amark">M</span></div>' +
+      '<div class="field"><label for="l_email">Email<span class="req">*</span></label>' +
+        '<span class="inp">' + IC_MAIL + '<input id="l_email" type="email" autocomplete="email" placeholder="Your email here..."></span></div>' +
+      '<div class="field"><label for="l_pw">Password<span class="req">*</span></label>' +
+        '<span class="inp">' + IC_LOCK + '<input id="l_pw" type="password" autocomplete="current-password">' +
+        '<button class="eye" type="button" aria-label="Show password">' + IC_EYE + '</button></span></div>' +
+      '<button class="flink" type="button" id="forgot">Forgot Password</button>' +
+      '<p class="autherr" id="authErr" hidden></p>' +
+      '<div><button class="btn btn-gold abtn" type="button" id="doLogin">Log In &rsaquo;</button></div>' +
+      '<p class="afoot">New to Meridian? <button type="button" data-step="register">Create an Account</button></p>');
+
+    wireX(); wireEyes(); wireSteps(card);
+    document.getElementById("forgot").addEventListener("click", function(){
+      var err = document.getElementById("authErr");
+      err.style.color = "var(--text-soft)";
+      err.textContent = "Password resets need an email service behind the site, which this prototype has none of. Create another account to keep going.";
+      err.hidden = false;
+    });
+    document.getElementById("doLogin").addEventListener("click", function(){
+      var err = document.getElementById("authErr");
+      err.style.color = "var(--warn)";
+      var email = document.getElementById("l_email").value.trim();
+      var pw = document.getElementById("l_pw").value;
+      if (!validEmail(email) || !pw){ err.textContent = "Enter your email and password."; err.hidden = false; return; }
+      var acct = accountFor(email);
+      if (!acct || !acct.hash){ err.textContent = "No account uses that email yet."; err.hidden = false; return; }
+      var btn = document.getElementById("doLogin");
+      btn.disabled = true; btn.textContent = "Checking...";
+      hashPw(pw, acct.salt || "").then(function(h){
+        if (h !== acct.hash){
+          btn.disabled = false; btn.innerHTML = "Log In &rsaquo;";
+          err.textContent = "That password does not match."; err.hidden = false; return;
+        }
+        saveSession({email:email, since:new Date().toISOString()});
+        myAccount = acct;
+        if (acct.stores && acct.stores[0]) setActiveStore(acct.stores[0].id);
+        paintAccount();
+        authStep = "account"; renderAuth();
+      });
+    });
+    return;
+  }
+
+  if (authStep === "register"){
+    var types = ["Independent grocer", "Restaurant", "Hotel kitchen", "Cafe group", "Deli", "Caterer", "Other"];
+    card.innerHTML = shell(
+      '<div class="ahead"><div><h2>Create an Account</h2><p class="sub">Trade accounts order against the weekly consignment.</p></div><span class="amark">M</span></div>' +
+      '<div class="field"><label for="r_business">Business name<span class="req">*</span></label>' +
+        '<span class="inp plain"><input id="r_business" type="text" placeholder="Tiong Bahru Provisions"></span></div>' +
+      '<div class="apair">' +
+        '<div class="field"><label for="r_type">Business type</label><span class="inp plain"><select id="r_type">' +
+          types.map(function(t){ return '<option>' + t + '</option>'; }).join("") + '</select></span></div>' +
+        '<div class="field"><label for="r_contact">Contact name<span class="req">*</span></label>' +
+          '<span class="inp plain"><input id="r_contact" type="text"></span></div>' +
+      '</div>' +
+      '<div class="field"><label for="r_email">Email<span class="req">*</span></label>' +
+        '<span class="inp">' + IC_MAIL + '<input id="r_email" type="email" autocomplete="email" placeholder="Your email here..."></span></div>' +
+      '<div class="apair">' +
+        '<div class="field"><label for="r_pw">Password<span class="req">*</span></label>' +
+          '<span class="inp">' + IC_LOCK + '<input id="r_pw" type="password" autocomplete="new-password">' +
+          '<button class="eye" type="button" aria-label="Show password">' + IC_EYE + '</button></span></div>' +
+        '<div class="field"><label for="r_pw2">Confirm<span class="req">*</span></label>' +
+          '<span class="inp">' + IC_LOCK + '<input id="r_pw2" type="password" autocomplete="new-password">' +
+          '<button class="eye" type="button" aria-label="Show password">' + IC_EYE + '</button></span></div>' +
+      '</div>' +
+      '<div class="field"><label for="r_address">Delivery address<span class="req">*</span></label>' +
+        '<span class="inp plain"><input id="r_address" type="text" placeholder="Street and unit"></span></div>' +
+      '<div class="apair">' +
+        '<div class="field"><label for="r_postal">Postal code</label><span class="inp plain"><input id="r_postal" type="text" inputmode="numeric"></span></div>' +
+        '<div class="field"><label for="r_window">Receiving window</label><span class="inp plain"><input id="r_window" type="text" value="14:00 to 18:00"></span></div>' +
+      '</div>' +
+      '<div class="apair">' +
+        '<div class="field"><label for="r_phone">Phone</label><span class="inp plain"><input id="r_phone" type="text" placeholder="+65"></span></div>' +
+        '<div class="field"><label for="r_uen">Company registration</label><span class="inp plain"><input id="r_uen" type="text" placeholder="UEN, optional"></span></div>' +
+      '</div>' +
+      '<p class="autherr" id="authErr" hidden></p>' +
+      '<div><button class="btn btn-gold abtn" type="button" id="doRegister">Create Account &rsaquo;</button></div>' +
+      '<p class="afoot">Already have an account? <button type="button" data-step="login">Log in</button></p>' +
+      '<p class="authnote">Prototype. Your password is salted and hashed before it is stored, never kept as typed, ' +
+      'but there is no server behind this page, so use a throwaway password.</p>', true);
+
+    wireX(); wireEyes(); wireSteps(card);
+    document.getElementById("doRegister").addEventListener("click", function(){
+      var err = document.getElementById("authErr");
+      var v = function(id){ return document.getElementById(id).value.trim(); };
+      var email = v("r_email"), pw = document.getElementById("r_pw").value, pw2 = document.getElementById("r_pw2").value;
+      if (!v("r_business") || !v("r_contact") || !v("r_address")){
+        err.textContent = "Business name, contact name and delivery address are needed."; err.hidden = false; return; }
+      if (!validEmail(email)){ err.textContent = "That does not look like an email address."; err.hidden = false; return; }
+      if (pw.length < 6){ err.textContent = "Use at least six characters for the password."; err.hidden = false; return; }
+      if (pw !== pw2){ err.textContent = "The two passwords do not match."; err.hidden = false; return; }
+      if (accountFor(email)){ err.textContent = "An account already uses that email. Log in instead."; err.hidden = false; return; }
+      if (!dbNs){ err.textContent = "Cannot reach the account store from this view."; err.hidden = false; return; }
+
+      var btn = document.getElementById("doRegister");
+      btn.disabled = true; btn.textContent = "Creating...";
+      var salt = newSalt();
+      hashPw(pw, salt).then(function(h){
+        var store = {
+          id: "s" + Date.now().toString(36) + Math.floor(Math.random() * 1000),
+          business: v("r_business"), type: v("r_type"), contact: v("r_contact"),
+          phone: v("r_phone"), address: v("r_address"), postal: v("r_postal"),
+          window: v("r_window"), uen: v("r_uen"),
+          status: "pending", openedAt: new Date().toISOString()
+        };
+        var doc = {email:email, salt:salt, hash:h, stores:[store], createdAt:new Date().toISOString()};
+        dbNs.doc("accounts/" + emailKey(email)).set(doc).then(function(){
+          saveSession({email:email, since:new Date().toISOString()});
+          myAccount = doc; setActiveStore(store.id);
+          authStep = "account"; renderAuth();
+        }).catch(function(){
+          btn.disabled = false; btn.innerHTML = "Create Account &rsaquo;";
+          err.textContent = "That did not save. This view may not be allowed to write to the account store.";
+          err.hidden = false;
+        });
+      });
+    });
+    return;
+  }
+
+  if (authStep === "storeform"){ renderStoreForm(window._editStore || null); return; }
+
+  var list = storeList();
+  var act = activeStore();
+  var rows = list.map(function(st){
+    var mine = ORDERS.filter(function(o){ return o.storeId === st.id; });
+    var spend = mine.reduce(function(t, o){ return t + (o.total || 0); }, 0);
+    var on = act && act.id === st.id;
+    return '<div class="storecard' + (on ? " on" : "") + '">' +
+      '<div class="sc-head"><div><p class="sc-name">' + st.business + (on ? ' <span class="sc-now">ordering as this</span>' : '') + '</p>' +
+      '<p class="sc-meta">' + st.type + ' &middot; ' + st.address + ' ' + st.postal + '</p></div>' +
+      '<span class="st ' + (st.status === "approved" ? "good" : "warn") + '"><i></i>' + (st.status === "approved" ? "Approved" : "Pending") + '</span></div>' +
+      '<p class="sc-meta">' + mine.length + ' order' + (mine.length === 1 ? "" : "s") + ' placed, ' + fmt(spend) + ' committed</p>' +
+      '<div class="sc-actions">' +
+        (on ? '' : '<button class="btn btn-gold" type="button" data-switch="' + st.id + '">Order as this store</button>') +
+        '<button class="btn btn-line" type="button" data-edit="' + st.id + '">Edit</button>' +
+      '</div></div>';
+  }).join("");
+
+  card.innerHTML = shell(
+    '<div class="ahead"><div><h2>' + (act ? act.business : "Your account") + '</h2>' +
+    '<p class="sub">Signed in as ' + session.email + '. You stay signed in on this browser until you sign out.</p></div>' +
+    '<span class="amark">M</span></div>' +
+    '<div class="storelist">' + rows + '</div>' +
+    '<div class="authactions" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:22px">' +
+      '<button class="btn btn-gold" type="button" id="authClose">Back to the shop</button>' +
+      '<button class="btn btn-line" type="button" id="authAdd">Add a store</button>' +
+      '<button class="btn btn-line" type="button" id="authOut">Sign out</button>' +
+    '</div>', true);
+
+  wireX();
+  document.getElementById("authClose").addEventListener("click", closeAuth);
+  document.getElementById("authAdd").addEventListener("click", function(){ window._editStore = null; authStep = "storeform"; renderAuth(); });
+  document.getElementById("authOut").addEventListener("click", function(){
+    saveSession(null); setActiveStore(null); myAccount = null;
+    basket = {}; qty = {}; updateCount(); render(); syncOrderBar(); paintAccount();
+    authStep = "login"; renderAuth();
+  });
+  Array.prototype.forEach.call(card.querySelectorAll("[data-switch]"), function(b){
+    b.addEventListener("click", function(){ setActiveStore(b.dataset.switch); renderAuth(); });
+  });
+  Array.prototype.forEach.call(card.querySelectorAll("[data-edit]"), function(b){
+    b.addEventListener("click", function(){
+      window._editStore = storeList().filter(function(x){ return x.id === b.dataset.edit; })[0] || null;
+      authStep = "storeform"; renderAuth();
+    });
+  });
+}
+
+function wireSteps(card){
+  Array.prototype.forEach.call(card.querySelectorAll("[data-step]"), function(b){
+    b.addEventListener("click", function(){ authStep = b.dataset.step; renderAuth(); });
+  });
+}
+
+function renderStoreForm(store){
+  var a = store || {};
+  var editing = !!store;
+  var first = !storeList().length;
+  var card = document.getElementById("authCard");
+  var types = ["Independent grocer", "Restaurant", "Hotel kitchen", "Cafe group", "Deli", "Caterer", "Other"];
+
+  function fld(label, inner, req){
+    return '<div class="field"><label>' + label + (req ? ' <span class="req">*</span>' : '') +
+      '</label><div class="inp plain">' + inner + '</div></div>';
+  }
+  var esc = function(s){ return String(s || "").replace(/"/g, "&quot;"); };
+  var title = editing ? "Edit store" : first ? "Your business" : "Add a store";
+  var sub = editing ? "Update the details the packhouse prints on your cartons."
+    : "This is what the packhouse marks the cartons with, and what the desk pools your order into.";
+
+  card.innerHTML = shell('<div class="ahead"><div><h2>' + title + '</h2>' +
+      '<p class="sub">' + sub + '</p></div><span class="amark">M</span></div>' +
+    fld("Store or business name", '<input id="f_business" type="text" value="' + esc(a.business) + '" placeholder="Tiong Bahru Provisions">', true) +
+    fld("Business type", '<select id="f_type">' + types.map(function(t){
+        return '<option' + (a.type === t ? " selected" : "") + '>' + t + '</option>'; }).join("") + '</select>') +
+    fld("Contact name", '<input id="f_contact" type="text" value="' + esc(a.contact) + '" placeholder="Who receives the delivery">', true) +
+    fld("Delivery address", '<input id="f_address" type="text" value="' + esc(a.address) + '" placeholder="Street and unit">', true) +
+    '<div class="apair">' +
+      fld("Postal code", '<input id="f_postal" type="text" inputmode="numeric" value="' + esc(a.postal) + '" placeholder="658123">') +
+      fld("Receiving window", '<input id="f_window" type="text" value="' + esc(a.window || "14:00 to 18:00") + '">') +
+    '</div>' +
+    '<div class="apair">' +
+      fld("Phone", '<input id="f_phone" type="text" value="' + esc(a.phone) + '" placeholder="+65">') +
+      fld("Company registration", '<input id="f_uen" type="text" value="' + esc(a.uen) + '" placeholder="UEN, optional">') +
+    '</div>' +
+    '<p class="autherr" id="authErr" hidden></p>' +
+    '<div class="authactions" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:22px">' +
+      '<button class="btn btn-gold" type="button" id="authSave">' + (editing ? "Save changes" : "Open this store") + '</button>' +
+      '<button class="btn btn-line" type="button" id="authBack">' + (first ? "Later" : "Cancel") + '</button>' +
+      (editing ? '<button class="btn btn-line" type="button" id="authDel">Remove</button>' : '') +
+    '</div>');
+  wireX();
+
+  document.getElementById("authBack").addEventListener("click", function(){
+    if (storeList().length){ authStep = "account"; renderAuth(); } else closeAuth();
+  });
+
+  if (editing){
+    document.getElementById("authDel").addEventListener("click", function(){
+      var left = storeList().filter(function(x){ return x.id !== a.id; });
+      saveAccount({email:session.email, stores:left, updatedAt:new Date().toISOString()}, function(){
+        setActiveStore(left.length ? left[0].id : null);
+        authStep = "account"; renderAuth();
+      });
+    });
+  }
+
+  document.getElementById("authSave").addEventListener("click", function(){
+    var err = document.getElementById("authErr");
+    var business = document.getElementById("f_business").value.trim();
+    var address = document.getElementById("f_address").value.trim();
+    var contact = document.getElementById("f_contact").value.trim();
+    if (!business || !address || !contact){
+      err.textContent = "Store name, contact name and delivery address are needed before the desk can open it.";
+      err.hidden = false; return;
+    }
+    var rec = {
+      id: a.id || ("s" + Date.now().toString(36) + Math.floor(Math.random() * 1000)),
+      business: business,
+      type: document.getElementById("f_type").value,
+      contact: contact,
+      phone: document.getElementById("f_phone").value.trim(),
+      address: address,
+      postal: document.getElementById("f_postal").value.trim(),
+      window: document.getElementById("f_window").value.trim(),
+      uen: document.getElementById("f_uen").value.trim(),
+      status: a.status || "pending",
+      openedAt: a.openedAt || new Date().toISOString()
+    };
+    var list = storeList().filter(function(x){ return x.id !== rec.id; });
+    list.push(rec);
+
+    var btn = document.getElementById("authSave");
+    btn.disabled = true; btn.textContent = "Saving...";
+    saveAccount({email:session.email, stores:list, updatedAt:new Date().toISOString()}, function(){
+      setActiveStore(rec.id);
+      authStep = "account"; renderAuth();
+    }, function(){
+      btn.disabled = false; btn.textContent = "Open this store";
+      err.textContent = "That did not save. This view may not be allowed to write to the account store.";
+      err.hidden = false;
+    });
+  });
+}
+
+document.getElementById("acctBtn").addEventListener("click", function(){ openAuth(); });
+
+
+document.addEventListener("keydown", function(e){ if (e.key === "Escape" && authEl.classList.contains("on")) closeAuth(); });
+
+function deskAgg(){
+  var bySku = {}, accounts = {}, goods = 0, units = 0, kg = 0;
+  ORDERS.forEach(function(o){
+    var who = o.account || "Unnamed account";
+    if (!accounts[who]) accounts[who] = {name:who, orders:0, lines:0, units:0, kg:0, value:0};
+    accounts[who].orders++;
+    (o.lines || []).forEach(function(l){
+      var ch = lineChargeKg(l);
+      var value = l.price * l.qty;
+      goods += value; units += l.qty; kg += ch;
+      accounts[who].lines++; accounts[who].units += l.qty; accounts[who].kg += ch; accounts[who].value += value;
+      if (!bySku[l.i]) bySku[l.i] = {qty:0, value:0, accounts:{}, name:l.name, unit:l.unit, origin:l.origin};
+      bySku[l.i].qty += l.qty; bySku[l.i].value += value;
+      bySku[l.i].accounts[who] = (bySku[l.i].accounts[who] || 0) + l.qty;
+    });
+  });
+  return {
+    bySku: bySku,
+    accounts: Object.keys(accounts).map(function(k){ return accounts[k]; }),
+    orders: ORDERS.length, goods: goods, units: units, kg: kg
+  };
+}
+
+function skuStatus(accts){
+  if (accts >= 8) return {cls:"good", text:"Secured at origin"};
+  if (accts >= 3) return {cls:"warn", text:"Building volume"};
+  return {cls:"hold", text:"Awaiting supplier"};
+}
+
+function renderDesk(){
+  var a = deskAgg();
+  var fill = Math.min(100, Math.round(a.kg / CAPACITY_KG * 100));
+  var tier = freightTier(a.kg);
+
+  var head = '<div class="dkhead"><div><span class="step">Internal view</span>' +
+    '<h2>Consignment AU-14, the pooled buy</h2>' +
+    '<p>Every order placed on this page by every account, added together into one buy at origin. ' +
+    (dbNs && dbNs.local
+      ? 'This copy runs on its own, so it pools the orders placed in this browser only.'
+      : 'These are live numbers from the shared order book, not a simulation.') +
+    '</p></div>' +
+    '<button class="btn btn-line" type="button" id="deskClose">Back to the shop</button></div>';
+
+  if (dbState === "off"){
+    document.getElementById("deskInner").innerHTML = head +
+      '<div class="dempty" style="padding:70px 10px"><strong>The shared order book is not available in this view</strong>' +
+      'Orders are stored per artifact and read back here. Sign in to the organization that owns this page to see them.</div>';
+    document.getElementById("deskClose").addEventListener("click", closeDesk);
+    return;
+  }
+
+  if (!a.orders){
+    document.getElementById("deskInner").innerHTML = head +
+      '<div class="dempty" style="padding:70px 10px"><strong>No orders on AU-14 yet</strong>' +
+      'Place one from the shop and it appears here within a second, along with anyone else ordering on this consignment.</div>';
+    document.getElementById("deskClose").addEventListener("click", closeDesk);
+    return;
+  }
+
+  var cats = {seafood:0, meat:0, produce:0, grocery:0};
+  Object.keys(a.bySku).forEach(function(li){ if (LINES[li]) cats[LINES[li].cat] += a.bySku[li].value; });
+  var catMax = Math.max.apply(null, Object.keys(cats).map(function(k){ return cats[k]; })) || 1;
+  var catLabel = {seafood:"Seafood", meat:"Meat", produce:"Fruit & Veg", grocery:"Grocery"};
+
+  var kpis = '<div class="kpis">' +
+    '<div class="kpi"><p class="k">Accounts ordering</p><p class="v">' + a.accounts.length + '</p><p class="n">' + a.orders + ' order' + (a.orders === 1 ? "" : "s") + ' placed</p></div>' +
+    '<div class="kpi"><p class="k">Lines committed</p><p class="v">' + Object.keys(a.bySku).length + '</p><p class="n">distinct SKUs on this consignment</p></div>' +
+    '<div class="kpi"><p class="k">Chargeable weight</p><p class="v">' + Math.round(a.kg) + '</p><p class="n">kg against a ' + CAPACITY_KG.toLocaleString() + ' kg allocation</p></div>' +
+    '<div class="kpi"><p class="k">Goods value</p><p class="v">' + fmt(a.goods) + '</p><p class="n">landed Singapore</p></div>' +
+    '<div class="kpi"><p class="k">Freight rate</p><p class="v">S$' + tier.rate.toFixed(2) + '</p><p class="n">per kg, ' + tier.label + '</p></div>' +
+    '</div>';
+
+  var bars = "";
+  ["seafood","meat","produce","grocery"].forEach(function(c){
+    bars += '<div class="bar"><span class="lab">' + catLabel[c] + '</span>' +
+      '<span class="track"><span class="fill" style="width:' + Math.round(cats[c] / catMax * 100) + '%"></span></span>' +
+      '<span class="val">' + fmt(cats[c]) + '</span></div>';
+  });
+
+  var panels = '<div class="panels">' +
+    '<div class="pbox"><h3>Demand by category</h3><p class="cap">Committed value on AU-14</p>' +
+      '<div class="bars">' + bars + '</div></div>' +
+    '<div class="pbox"><h3>Freight fill</h3><p class="cap">Against the booked AU-14 allocation</p>' +
+      '<div class="meter"><i style="width:' + fill + '%"></i></div>' +
+      '<div class="meterrow"><span>Committed</span><strong>' + Math.round(a.kg).toLocaleString() + ' of ' + CAPACITY_KG.toLocaleString() + ' kg</strong></div>' +
+      '<div class="meterrow"><span>Utilisation</span><strong>' + fill + '%</strong></div>' +
+      '<div class="meterrow"><span>Current rate</span><strong>S$' + tier.rate.toFixed(2) + ' per kg</strong></div>' +
+      '<p class="cap" style="margin:14px 0 0">Rate band ' + tier.label + '. ' + (tier.rate > 2.70
+        ? 'Every account that joins pushes this down. Over 4,000 kg the rate drops to S$2.70 and every order on the consignment reprices.'
+        : 'This is the floor rate. Every account on AU-14 is landing at S$2.70 per kg.') + '</p></div>' +
+    '</div>';
+
+  var tabs = '<div class="tabs">' +
+    '<button class="tab" data-tab="buy" aria-pressed="' + (deskTab === "buy") + '">Buy sheet</button>' +
+    '<button class="tab" data-tab="orders" aria-pressed="' + (deskTab === "orders") + '">Orders by account</button>' +
+    '<button class="tab" data-tab="po" aria-pressed="' + (deskTab === "po") + '">Bulk purchase orders</button>' +
+    '<button class="tab" data-tab="accounts" aria-pressed="' + (deskTab === "accounts") + '">Accounts</button>' +
+    '</div>';
+
+  var table = "";
+  if (deskTab === "buy"){
+    var rows = Object.keys(a.bySku).sort(function(x, y){ return a.bySku[y].value - a.bySku[x].value; });
+    table = '<div class="tablewrap"><table class="desk-t"><thead><tr>' +
+      '<th>Line</th><th>Origin</th><th class="r">Accounts</th><th class="r">Total qty</th>' +
+      '<th class="r">Value</th><th class="r">Share</th><th>Buy status</th></tr></thead><tbody>';
+    rows.forEach(function(li){
+      var d = a.bySku[li];
+      var names = Object.keys(d.accounts);
+      var st = skuStatus(names.length);
+      table += '<tr class="expander" data-sku="' + li + '">' +
+        '<td class="nm">' + d.name + '<small>tap to see which accounts</small></td>' +
+        '<td>' + (d.origin || "") + '</td>' +
+        '<td class="r">' + names.length + '</td>' +
+        '<td class="r">' + d.qty + ' ' + d.unit + '</td>' +
+        '<td class="r">' + fmt(d.value) + '</td>' +
+        '<td class="r">' + Math.round(d.value / a.goods * 100) + '%</td>' +
+        '<td><span class="st ' + st.cls + '"><i></i>' + st.text + '</span></td></tr>' +
+        '<tr class="sub-t" data-sub="' + li + '" hidden><td colspan="7">' +
+          names.map(function(n){ return n + ', ' + d.accounts[n] + ' ' + d.unit; }).join(' &middot; ') +
+        '</td></tr>';
+    });
+    table += '</tbody></table></div>';
+  } else if (deskTab === "po"){
+    var groups = {};
+    Object.keys(a.bySku).forEach(function(li){
+      var d = a.bySku[li], key = d.origin || "Origin to confirm";
+      if (!groups[key]) groups[key] = {lines:[], value:0, qty:0};
+      groups[key].lines.push({name:d.name, qty:d.qty, unit:d.unit});
+      groups[key].value += d.value;
+      groups[key].qty += d.qty;
+    });
+    var keys = Object.keys(groups).sort(function(x, y){ return groups[y].value - groups[x].value; });
+    table = '<p style="margin:0 0 14px; font-size:var(--s--1); color:var(--text-soft)">' +
+      'One buyer places these. Each row is a single bulk order to one origin, covering every account that asked for those lines. ' +
+      a.accounts.length + ' account' + (a.accounts.length === 1 ? "" : "s") + ' becomes ' + keys.length +
+      ' purchase order' + (keys.length === 1 ? "" : "s") + '.</p>' +
+      '<div class="tablewrap"><table class="desk-t"><thead><tr>' +
+      '<th>Origin</th><th>Lines in this PO</th><th class="r">Total qty</th><th class="r">PO value</th><th>Action</th></tr></thead><tbody>';
+    keys.forEach(function(k, idx){
+      var g = groups[k];
+      table += '<tr><td class="nm">' + k + '<small>' + g.lines.length + ' line' + (g.lines.length === 1 ? "" : "s") + '</small></td>' +
+        '<td>' + g.lines.map(function(l){ return l.name + ', ' + l.qty + ' ' + l.unit; }).join('<br>') + '</td>' +
+        '<td class="r">' + g.qty + '</td><td class="r">' + fmt(g.value) + '</td>' +
+        '<td><button class="btn btn-line po-btn" type="button" style="padding:8px 14px; font-size:var(--s--1)">Issue PO</button></td></tr>';
+    });
+    table += '</tbody><tfoot><tr><td colspan="3" style="font-weight:700">Total to place at origin</td>' +
+      '<td class="r" style="font-weight:700">' + fmt(a.goods) + '</td><td></td></tr></tfoot></table></div>';
+  } else if (deskTab === "accounts"){
+    table = '<p style="margin:0 0 14px; font-size:var(--s--1); color:var(--text-soft)">' +
+      'Every business that has opened an account on this page. Approving one moves it onto trade terms.</p>' +
+      '<div class="tablewrap"><table class="desk-t"><thead><tr>' +
+      '<th>Store</th><th>Type</th><th class="r">Stores on this sign-in</th><th>Contact</th><th>Delivery</th><th>Status</th><th>Action</th></tr></thead><tbody>';
+    if (!ACCOUNTS.length){
+      table += '<tr><td colspan="7" style="color:var(--text-soft)">No accounts opened yet.</td></tr>';
+    }
+    var flat = [];
+    ACCOUNTS.forEach(function(doc){
+      (doc.stores || []).forEach(function(st){ flat.push(Object.assign({}, st, {ownerDoc: doc._id})); });
+    });
+    if (!flat.length && ACCOUNTS.length){
+      table += '<tr><td colspan="7" style="color:var(--text-soft)">No stores opened yet.</td></tr>';
+    }
+    flat.sort(function(x, y){ return (x.business || "").localeCompare(y.business || ""); }).forEach(function(ac){
+      var approved = ac.status === "approved";
+      table += '<tr><td class="nm">' + (ac.business || "Unnamed") + '<small>' + (ac.uen || "no registration given") + '</small></td>' +
+        '<td>' + (ac.type || "") + '</td><td class="r">' + (flat.filter(function(x){ return x.ownerDoc === ac.ownerDoc; }).length) + '</td>' +
+        '<td>' + (ac.contact || "") + '<br><span style="color:var(--text-soft)">' + (ac.phone || "") + '</span></td>' +
+        '<td>' + (ac.address || "") + ' ' + (ac.postal || "") + '<br><span style="color:var(--text-soft)">receives ' + (ac.window || "") + '</span></td>' +
+        '<td><span class="st ' + (approved ? "good" : "warn") + '"><i></i>' + (approved ? "Approved" : "Pending") + '</span></td>' +
+        '<td>' + (approved
+          ? '<span style="color:var(--text-mute)">on trade terms</span>'
+          : '<button class="btn btn-line approve-btn" type="button" data-owner="' + ac.ownerDoc + '" data-store="' + ac.id + '" style="padding:8px 14px; font-size:var(--s--1)">Approve</button>') +
+        '</td></tr>';
+    });
+    table += '</tbody></table></div>';
+  } else {
+    var sorted = a.accounts.slice().sort(function(x, y){ return y.value - x.value; });
+    table = '<div class="tablewrap"><table class="desk-t"><thead><tr>' +
+      '<th>Account</th><th class="r">Orders</th><th class="r">Lines</th><th class="r">Chargeable</th>' +
+      '<th class="r">Goods</th><th class="r">Freight</th><th class="r">Landed</th></tr></thead><tbody>';
+    sorted.forEach(function(st){
+      var fr = Math.max(FREIGHT_MIN, st.kg * tier.rate);
+      table += '<tr><td class="nm">' + st.name + '</td>' +
+        '<td class="r">' + st.orders + '</td><td class="r">' + st.lines + '</td>' +
+        '<td class="r">' + st.kg.toFixed(1) + ' kg</td>' +
+        '<td class="r">' + fmt(st.value) + '</td>' +
+        '<td class="r">' + fmt(fr) + '</td>' +
+        '<td class="r">' + fmt(st.value + fr) + '</td></tr>';
+    });
+    table += '</tbody></table></div>';
+  }
+
+  var reset = iCanEdit ? '<div class="danger" id="dangerZone">' +
+    '<h3>Reset the consignment</h3>' +
+    '<p>Clears the shared order book so the desk starts from zero. Useful before showing this to someone. ' +
+    'It cannot be undone, and it clears orders for every account, not just yours.</p>' +
+    '<div class="dangeractions">' +
+      '<button class="btn btn-line" type="button" id="resetOrders">Clear all orders</button>' +
+      '<button class="btn btn-line" type="button" id="resetAll">Clear orders and accounts</button>' +
+    '</div><p class="autherr" id="resetMsg" hidden></p></div>' : '';
+
+  document.getElementById("deskInner").innerHTML = head + kpis + panels + tabs + table + reset;
+
+  if (iCanEdit){
+    wireReset("resetOrders", false);
+    wireReset("resetAll", true);
+  }
+
+  document.getElementById("deskClose").addEventListener("click", closeDesk);
+  Array.prototype.forEach.call(document.querySelectorAll("[data-tab]"), function(b){
+    b.addEventListener("click", function(){ deskTab = b.dataset.tab; renderDesk(); });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll(".approve-btn"), function(b){
+    b.addEventListener("click", function(){
+      if (!dbNs) return;
+      b.disabled = true; b.textContent = "Approving...";
+      var ownerDoc = ACCOUNTS.filter(function(d){ return d._id === b.dataset.owner; })[0];
+      if (!ownerDoc){ b.disabled = false; b.textContent = "Approve"; return; }
+      var next = (ownerDoc.stores || []).map(function(st){
+        return st.id === b.dataset.store ? Object.assign({}, st, {status:"approved"}) : st;
+      });
+      dbNs.doc("accounts/" + b.dataset.owner).update({stores: next}).catch(function(){
+        b.disabled = false; b.textContent = "Approve";
+      });
+    });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll(".po-btn"), function(b){
+    b.addEventListener("click", function(){ b.textContent = "Issued ✓"; b.disabled = true; b.style.opacity = ".6"; });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll(".expander"), function(row){
+    row.addEventListener("click", function(){
+      var sub = document.querySelector('[data-sub="' + row.dataset.sku + '"]');
+      if (sub) sub.hidden = !sub.hidden;
+    });
+  });
+}
+
+function wireReset(id, alsoAccounts){
+  var btn = document.getElementById(id);
+  if (!btn) return;
+  var armed = false;
+  var original = btn.textContent;
+  btn.addEventListener("click", function(){
+    if (!armed){
+      armed = true;
+      btn.textContent = "Press again to confirm";
+      btn.style.borderColor = "var(--warn)";
+      btn.style.color = "var(--warn)";
+      setTimeout(function(){
+        if (!armed) return;
+        armed = false; btn.textContent = original; btn.style.borderColor = ""; btn.style.color = "";
+      }, 5000);
+      return;
+    }
+    armed = false;
+    if (!dbNs) return;
+    btn.disabled = true; btn.textContent = "Clearing...";
+    var jobs = ORDERS.map(function(o){ return dbNs.doc("orders/" + o._id).delete(); });
+    if (alsoAccounts){
+      jobs = jobs.concat(ACCOUNTS.map(function(ac){ return dbNs.doc("accounts/" + ac._id).delete(); }));
+    }
+    Promise.all(jobs.map(function(j){ return j.catch(function(){}); })).then(function(){
+      var msg = document.getElementById("resetMsg");
+      if (msg){
+        msg.style.color = "var(--ok)";
+        msg.textContent = alsoAccounts ? "Order book and accounts cleared." : "Order book cleared.";
+        msg.hidden = false;
+      }
+      if (alsoAccounts){ myAccount = null; setActiveStore(null); }
+      basket = {}; qty = {};
+      updateCount(); render(); syncOrderBar(); paintAccount();
+      setTimeout(renderDesk, 700);
+    });
+  });
+}
+
+function openDeskView(){ renderDesk(); deskEl.classList.add("on"); document.body.style.overflow = "hidden"; window.scrollTo(0, 0); }
+function closeDesk(){ deskEl.classList.remove("on"); document.body.style.overflow = ""; }
+
+document.getElementById("openDesk").addEventListener("click", openDeskView);
+document.getElementById("openDeskTop").addEventListener("click", openDeskView);
+document.addEventListener("keydown", function(e){ if (e.key === "Escape" && deskEl.classList.contains("on")) closeDesk(); });
+
+document.getElementById("themeBtn").addEventListener("click", function(){
+  var root = document.documentElement, current = root.getAttribute("data-theme");
+  if (!current) current = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
+  root.setAttribute("data-theme", current === "dark" ? "light" : "dark");
+});
+
+render();
+updateCount();
+</script>
